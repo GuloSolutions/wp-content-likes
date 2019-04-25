@@ -64,6 +64,8 @@ register_deactivation_hook( __FILE__, 'deactivate_wordpress_content_likes' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes-admin-settings.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes-admin-widget.php';
+
 
 
 /**

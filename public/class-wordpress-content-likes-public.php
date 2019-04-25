@@ -99,5 +99,4 @@ class Wordpress_Content_Likes_Public {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wordpress-content-likes-public.js', array( 'jquery' ), $this->version, false );
 
 	}
-
 }

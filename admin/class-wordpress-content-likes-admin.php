@@ -103,7 +103,7 @@ class Wordpress_Content_Likes_Admin
     public function wordpress_content_likes_widget()
     {
         wp_add_dashboard_widget(
-                 'example_dashboard_widget',         // Widget slug.
+                 'wordpress_likes_dashboard_widget',         // Widget slug.
                  'WordPress Content Likes Widget',         // Title.
                  'wordpress_content_likes_dashboard_widget_function' // Display function.
         );
@@ -126,4 +126,22 @@ class Wordpress_Content_Likes_Admin
             echo $content;
         }
     }
+
+    public function wpdocs_register_meta_boxes_pages()
+    {
+        add_meta_box('meta-box-id', __('Likes for this page', 'textdomain'), 'wpdocs_my_display_callback_page', 'page');
+        function wpdocs_my_display_callback_page($page)
+        {
+            // get_post_meta to get the likes
+            $content = '<div>' . $page->ID . '</div>';
+            echo $content;
+        }
+    }
+
+
+
+
+
+
+
 }

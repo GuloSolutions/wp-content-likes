@@ -110,7 +110,7 @@ class Wordpress_Content_Likes_Admin
 
         function wordpress_content_likes_dashboard_widget_function()
         {
-            $content = "The hightest rated blogs are: ";
+            $content = "The highest rated blogs are: ";
             echo $content;
         }
     }
@@ -136,5 +136,28 @@ class Wordpress_Content_Likes_Admin
             $content = '<div>' . $page->ID . '</div>';
             echo $content;
         }
+    }
+
+    public function wpdocs_register_meta_boxes_custom_post()
+    {
+        // Global object containing current admin page
+        global $pagenow;
+        $custom_post_id = $_GET['post'];
+
+        add_meta_box('custom-post-like-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_page_custom_post', $custom_post_id, 'side', 'high', null);
+        function wpdocs_my_display_callback_page_custom_post()
+        {
+            $custom_post_id = $_GET['post'];
+            // error_log(print_r($_GET['post']));
+            // get_post_meta to get the likes
+            $content = '<div>' . $custom_post_id . '</div>';
+            echo $content;
+        }
+
+
+        // If current page is post.php and post isset than query for its post type
+        // if the post type is 'event' do something
+   //  	if ( 'post.php' === $pagenow && isset($_GET['post']) && 'post' === get_post_type( $_GET['post'] ) )
+   //      	error_log(print_r($_GET['post'], true));
     }
 }

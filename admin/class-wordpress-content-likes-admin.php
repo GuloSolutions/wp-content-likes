@@ -109,15 +109,15 @@ class Wordpress_Content_Likes_Admin
         );
 
         function wordpress_content_likes_dashboard_widget_function()
-    	{
-        	$content = "The hightest rated blogs are: ";
-        	echo $content;
-    	}
+        {
+            $content = "The hightest rated blogs are: ";
+            echo $content;
+        }
     }
 
     public function wpdocs_register_meta_boxes()
     {
-        add_meta_box('meta-box-id', __('Likes for this post', 'textdomain'), 'wpdocs_my_display_callback', 'post');
+        add_meta_box("post-like-meta-box", __('Likes for this post', 'textdomain'), 'wpdocs_my_display_callback', 'post', 'side', 'high', null);
 
         function wpdocs_my_display_callback($post)
         {
@@ -129,7 +129,7 @@ class Wordpress_Content_Likes_Admin
 
     public function wpdocs_register_meta_boxes_pages()
     {
-        add_meta_box('meta-box-id', __('Likes for this page', 'textdomain'), 'wpdocs_my_display_callback_page', 'page');
+        add_meta_box('page-like-meta-box', __('Likes for this page', 'textdomain'), 'wpdocs_my_display_callback_page', 'page', 'side', 'high', null);
         function wpdocs_my_display_callback_page($page)
         {
             // get_post_meta to get the likes
@@ -137,11 +137,4 @@ class Wordpress_Content_Likes_Admin
             echo $content;
         }
     }
-
-
-
-
-
-
-
 }

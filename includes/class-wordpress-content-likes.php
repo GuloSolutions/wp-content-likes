@@ -155,7 +155,7 @@ class Wordpress_Content_Likes
         $plugin_admin = new Wordpress_Content_Likes_Admin($this->get_plugin_name(), $this->get_version());
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-        $this->loader->add_action('wp_dashboard_setup', $plugin_admin, 'example_add_dashboard_widgets', 10);
+        $this->loader->add_action('wp_dashboard_setup', $plugin_admin, 'wordpress_content_likes_widget', 10);
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes', 10);
     }
 

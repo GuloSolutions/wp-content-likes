@@ -100,18 +100,19 @@ class Wordpress_Content_Likes_Admin
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-admin.js', array( 'jquery' ), $this->version, false);
     }
 
-    public function example_dashboard_widget_function()
-    {
-        echo "The hightest rated blogs are: ";
-    }
-
-    public function example_add_dashboard_widgets()
+    public function wordpress_content_likes_widget()
     {
         wp_add_dashboard_widget(
                  'example_dashboard_widget',         // Widget slug.
-                 'Example Dashboard Widget',         // Title.
-                 'example_dashboard_widget_function' // Display function.
+                 'WordPress Content Likes Widget',         // Title.
+                 'wordpress_content_likes_dashboard_widget_function' // Display function.
         );
+
+        function wordpress_content_likes_dashboard_widget_function()
+    	{
+        	$content = "The hightest rated blogs are: ";
+        	echo $content;
+    	}
     }
 
     public function wpdocs_register_meta_boxes()

@@ -101,21 +101,17 @@ class Wordpress_Content_Likes_Public {
 	}
 
 	public function register_like_shortcode() {
-
-		error_log(print_r("in print", true));
-		error_log(print_r($this->plugin_name, true));
-
         add_shortcode($this->plugin_name . '_like_button', array($this, 'print_like_button'));
 	}
 
 	public function print_like_button() {
 
 	$content = <<<EOS
-		<a role="button" clicktype=0 class="social social-likes">
+<a role="button" clicktype=0 class="social social-likes">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                      width="35px" height="35px" viewBox="0 0 37 37" style="enable-background:new 0 0 37 37;" xml:space="preserve">
                 <g id="Page-1">
-                    <g id="like-individual" transform="translate(-246.000000, -1423.000000)">
+                    <g id="Asn-blog-individual" transform="translate(-246.000000, -1423.000000)">
                         <g id="share" transform="translate(246.000000, 1250.000000)">
                             <g id="like" transform="translate(1.000000, 171.000000)">
                                 <g id="np_heart_888700_000000" transform="translate(0.000000, 3.000000)">
@@ -131,7 +127,7 @@ class Wordpress_Content_Likes_Public {
                     </g>
                 </g>
             </svg>
-        </a>;
+        </a>
 EOS;
          return $content;
 	}

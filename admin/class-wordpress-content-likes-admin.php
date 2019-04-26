@@ -118,10 +118,8 @@ class Wordpress_Content_Likes_Admin
     public function wpdocs_register_meta_boxes()
     {
         add_meta_box("post-like-meta-box", __('Likes for this post', 'textdomain'), 'wpdocs_my_display_callback', 'post', 'side', 'high', null);
-
         function wpdocs_my_display_callback($post)
         {
-            // get_post_meta to get the likes
             $content = '<div>' . $post->ID . '</div>';
             echo $content;
         }
@@ -132,7 +130,6 @@ class Wordpress_Content_Likes_Admin
         add_meta_box('page-like-meta-box', __('Likes for this page', 'textdomain'), 'wpdocs_my_display_callback_page', 'page', 'side', 'high', null);
         function wpdocs_my_display_callback_page($page)
         {
-            // get_post_meta to get the likes
             $content = '<div>' . $page->ID . '</div>';
             echo $content;
         }
@@ -144,20 +141,16 @@ class Wordpress_Content_Likes_Admin
         global $pagenow;
         $custom_post_id = $_GET['post'];
 
-        add_meta_box('custom-post-like-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_page_custom_post', $custom_post_id, 'side', 'high', null);
-        function wpdocs_my_display_callback_page_custom_post()
+        error_log(print_r($custom_post_id, true));
+
+        print_r($custom_post_id, true);
+
+        add_meta_box('custom-post-likes-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_custom_post', $custom_post_id, 'side', 'high', null);
+        function wpdocs_my_display_callback_custom_post($custom_post_id)
         {
-            $custom_post_id = $_GET['post'];
-            // error_log(print_r($_GET['post']));
-            // get_post_meta to get the likes
+            // $custom_post_id = $_GET['post'];
             $content = '<div>' . $custom_post_id . '</div>';
             echo $content;
         }
-
-
-        // If current page is post.php and post isset than query for its post type
-        // if the post type is 'event' do something
-   //  	if ( 'post.php' === $pagenow && isset($_GET['post']) && 'post' === get_post_type( $_GET['post'] ) )
-   //      	error_log(print_r($_GET['post'], true));
     }
 }

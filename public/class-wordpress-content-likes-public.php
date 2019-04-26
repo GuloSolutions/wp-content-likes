@@ -104,7 +104,7 @@ class Wordpress_Content_Likes_Public
 
         wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version);
         wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version, false);
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['like_count' => 1, 'ajaxurl' => admin_url('admin-ajax.php')]);
+        wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['like_count', 'vote_cookie', 'ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
     public function register_like_shortcode()
@@ -151,8 +151,6 @@ class Wordpress_Content_Likes_Public
             $result[0]--;
         }
 
-         // error_log(print_r($result, true));
-
         $cookie = substr($cookie, 25);
         $cookie = $cookie.$this->postid;
 
@@ -178,15 +176,25 @@ class Wordpress_Content_Likes_Public
 	{
 		$like_count = get_post_meta($this->id,'likes', true);
 		 error_log(print_r($like_count, true));
-		     if (isset($like_count)) {
-        ?>
-        <script type="text/javascript">
-        // /* <![CDATA[ */
-            ajax_object.like_count = <?php echo $like_count; ?>;
-        // /* ]]> */
-        //   </script>
-        <?php
-    }
+		if (isset($like_count)) {
+	        ?>
+	        <script type="text/javascript">
+	        // /* <![CDATA[ */
+	            ajax_object.like_count = <?php echo $like_count; ?>;
+	        // /* ]]> */
+	        //   </script>
+	        <?php
+	    }
+
+	    	if (isset($vote)) {
+	        ?>
+	        <script type="text/javascript">
+	        // /* <![CDATA[ */
+	            ajax_object.vote_cookie = <?php echo $vote_cookie; ?>;
+	        // /* ]]> */
+	        //   </script>
+	        <?php
+	    }
 
 	}
 }

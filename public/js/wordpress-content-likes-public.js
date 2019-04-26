@@ -3,7 +3,7 @@
     let cur_url = $(location).attr('href');
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
     $( document ).ready(function() {
-        if (readCookie('hasVoted' + sub_cur_url ) && vote_cookie == 1){
+        if (readCookie('hasVoted' + sub_cur_url ) && ajax_object.vote_cookie == 1){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }

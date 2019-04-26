@@ -41,6 +41,10 @@ class Wordpress_Content_Likes_Public
      */
     private $version;
 
+    private $postid;
+
+    private $id;
+
     /**
      * Initialize the class and set its properties.
      *
@@ -100,7 +104,7 @@ class Wordpress_Content_Likes_Public
 
         wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version);
         wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version, false);
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
+        wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['like_count' => 1, 'ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
     public function register_like_shortcode()
@@ -115,42 +119,74 @@ class Wordpress_Content_Likes_Public
 
     public function _s_likebtn__handler()
     {
-        $postid = $_POST['postid'];
+        $this->postid = $_POST['postid'];
 
-        error_log(print_r("before postid", true));
+        $cookie = $_POST['voted'];
 
-        // $cookie = $_POST['voted'];
-        // $clickvote = $_POST['vote'];
-        // $newvote = $_POST['newvote'];
-        // $blog = '_s_like_post_'.$postid;
-        // $vote = substr($cookie, 25).$postid;
-        // $result = get_post_meta($postid, 'likes');
-        // $old_vote = get_option($vote);
-        // error_log(print_r("before result", true), 3, '/tmp/error.log');
-        // error_log(print_r($result, true), 3, '/tmp/error.log');
+        $clickvote = $_POST['vote'];
 
-        // if (!$result[0]) {
-        //     update_post_meta($id, 'likes', 1);
-        //     echo json_encode(1);
-        //     wp_die();
-        // }
+        $newvote = $_POST['newvote'];
 
-        // if (filter_var($result[0], FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
-        //     $result++;
-        // } elseif (filter_var($result[0], FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
-        //     $result--;
-        // }
+        $vote = substr($cookie, 25).$this->postid;
 
-        // $cookie = substr($cookie, 25);
-        // $cookie = $cookie.$postid;
+        $stored = get_post_meta($this->postid, 'likes')[0];
 
-        // update_option($blog, (string)$result);
-        // update_option($vote, $newvote);
+        error_log(print_r("this is stored", true));
+        error_log(print_r($stored, true));
 
-        // echo json_encode($result[0]);
+        if (!$stored ) {
+        	add_post_meta( $this->postid, 'likes', 1 );
+        	echo json_encode($result);
+        	wp_die();
+        }
 
-        // update_post_meta($id, 'likes', $result);
+        $old_vote = get_option($vote);
+
+        $result = $stored[0];
+         $result = (int)$result;
+
+        if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
+            $result[0]++;
+        } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
+            $result[0]--;
+        }
+
+         // error_log(print_r($result, true));
+
+        $cookie = substr($cookie, 25);
+        $cookie = $cookie.$this->postid;
+
+        update_option($vote, $newvote);
+
+        error_log(print_r($result, true));
+
+        $saved = update_post_meta($this->postid, 'likes', $result);
+        error_log(print_r($saved, true));
+        echo json_encode($result);
 
         wp_die();
     }
+
+    public function _s_get_post_id() {
+
+    	$like_count = get_post_meta($this->id,'likes');
+    	//error_log(print_r($like_count, true));
+
+    }
+
+    public function _s_export_liked_count()
+	{
+		$like_count = get_post_meta($this->id,'likes', true);
+		 error_log(print_r($like_count, true));
+		     if (isset($like_count)) {
+        ?>
+        <script type="text/javascript">
+        // /* <![CDATA[ */
+            ajax_object.like_count = <?php echo $like_count; ?>;
+        // /* ]]> */
+        //   </script>
+        <?php
+    }
+
+	}
 }

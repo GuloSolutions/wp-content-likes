@@ -8,14 +8,8 @@
             _is_cookie_set = true;
         }
 
-    //     console.log(like_count);
-    //     console.log(vote_cookie);
-    var like_count = 20;
-
-    var vote_cookie = 1;
-
-        if (like_count !== undefined  && like_count >= 1){
-            var like_count_div = '<div class="likes-count">' + like_count + '</div>';
+        if ( ajax_object.like_count !== undefined  &&  ajax_object.like_count >= 1){
+            var like_count_div = '<div class="likes-count">' + ajax_object.like_count + '</div>';
            $('.social-likes').append(like_count_div);
         }
 
@@ -70,8 +64,11 @@
                      $button.attr('clicktype', newclicktype);
                      if (response == 1 ) {
                          $('.social-likes').append('<div class="likes-count">' + response + '</div>');
+                         console.log(response);
+                         console.log('after submit');
                      } else {
                         $('.likes-count').html('<div>' +  response + '</div>');
+                           console.log('after submit');
                     }
                 }
             });

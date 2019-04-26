@@ -8,8 +8,11 @@
             _is_cookie_set = true;
         }
 
-        console.log(like_count);
-        console.log(vote_cookie);
+    //     console.log(like_count);
+    //     console.log(vote_cookie);
+    var like_count = 20;
+
+    var vote_cookie = 1;
 
         if (like_count !== undefined  && like_count >= 1){
             var like_count_div = '<div class="likes-count">' + like_count + '</div>';
@@ -19,6 +22,7 @@
        $('.social-likes').on('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+
             var postid;
             var clicktype;
             var newclicktype;

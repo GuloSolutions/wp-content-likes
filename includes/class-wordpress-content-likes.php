@@ -158,8 +158,7 @@ class Wordpress_Content_Likes
         $this->loader->add_action('wp_dashboard_setup', $plugin_admin, 'wordpress_content_likes_widget', 10);
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes', 10);
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_pages', 10);
-        $this->loader->add_action('admin_init', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
-
+        $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
     }
 
     /**
@@ -175,6 +174,8 @@ class Wordpress_Content_Likes
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+        $this->loader->add_action('wp_ajax_nopriv_like_handler', $plugin_public, '_s_likebtn__handler', 10);
+        $this->loader->add_action('wp_ajax_like_handler', $plugin_public, '_s_likebtn__handler', 10);
     }
 
     /**

@@ -124,6 +124,9 @@ class Wordpress_Content_Likes
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-wordpress-content-likes-public.php';
 
+        require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wordpress-content-likes-public-display.php';
+
+
         $this->loader = new Wordpress_Content_Likes_Loader();
     }
 

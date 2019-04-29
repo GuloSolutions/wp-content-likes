@@ -2,14 +2,16 @@
     let _is_cookie_set = false;
     let cur_url = $(location).attr('href');
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
+
     let like_count_div = '';
     let repeated = 1;
+
     $( document ).ready(function() {
         if (readCookie('hasVoted' + sub_cur_url ) && ajax_likes.vote_cookie == 1){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
-        if ( ajax_likes.like_count !== undefined && ajax_likes.like_count != 0){
+        if ( ajax_likes.like_count !== undefined || ajax_likes.like_count != 0){
             // if (ajax_likes.like_count == 0){
             //     var like_count_div = '<div class="likes-count"></div>';
             // } else {
@@ -57,7 +59,7 @@
             var likedata = {
                 'action': 'like_handler',
                 'postid': postid,
-                'voted': _is_cookie_set,
+                'voted': sub_cur_url,
                 'vote': clicktype,
                 'newvote': newclicktype
             };

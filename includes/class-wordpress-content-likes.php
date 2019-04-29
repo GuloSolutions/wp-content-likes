@@ -178,7 +178,6 @@ class Wordpress_Content_Likes
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
         $this->loader->add_action('wp_ajax_nopriv_like_handler', $plugin_public, '_s_likebtn__handler', 10);
-        // if (is_singular('post'))
         $this->loader->add_action('wp_ajax_like_handler', $plugin_public, '_s_likebtn__handler', 10);
         $this->loader->add_action('init', $plugin_public, '_s_get_post_id', 10);
         $this->loader->add_action('wp_head', $plugin_public, '_s_export_liked_count', 20);

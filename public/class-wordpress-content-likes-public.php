@@ -104,11 +104,12 @@ class Wordpress_Content_Likes_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-        if (is_singular('post')) {
-        	wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version, false);
+        wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version, false);
+
+        //if (is_singular('post')) {
         	wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version, true);
         	wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
-        }
+        //}
     }
 
     public function register_like_shortcode()
@@ -124,19 +125,13 @@ class Wordpress_Content_Likes_Public
     public function _s_likebtn__handler()
     {
         $this->postid = $_POST['postid'];
-
         $cookie = $_POST['voted'];
-
+        $cookie = str_replace('/','',$cookie);
         $clickvote = $_POST['vote'];
-
         $newvote = $_POST['newvote'];
+        $vote = substr($cookie, -1, -16).$this->postid;
 
-        $this->vote = substr($cookie, 25).$this->postid;
-
-        $stored = get_post_meta($this->postid, 'likes')[0];
-
-        error_log(print_r("this is stored", true));
-        error_log(print_r($stored, true));
+        $stored = get_post_meta($vote, 'likes')[0];
 
         if (!$stored) {
             add_post_meta($this->postid, 'likes', 1);
@@ -144,7 +139,7 @@ class Wordpress_Content_Likes_Public
             wp_die();
         }
 
-        $old_vote = get_option($this->vote);
+        $old_vote = get_option($vote);
 
         $result = $stored;
         $result = (int)$result;
@@ -155,13 +150,7 @@ class Wordpress_Content_Likes_Public
             $result--;
         }
 
-        error_log(print_r("this is resultt", true));
-        error_log(print_r($result, true));
-
-        $cookie = substr($cookie, 25);
-        $cookie = $cookie.$this->postid;
-
-        update_option($this->vote, $newvote);
+        update_option($vote, $newvote);
 
         $saved = update_post_meta($this->postid, 'likes', $result);
 
@@ -183,31 +172,24 @@ class Wordpress_Content_Likes_Public
     {
         $like_count = get_post_meta($this->id, 'likes', true);
 
-        $vote_cookie = get_option($this->vote);
+        $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        error_log(print_r($this->id, true));
+        $uri = array_slice(explode('/', rtrim($url, '/')), -1)[0];
 
-        error_log(print_r($like_count, true));
+        $uri = substr($uri, -15);
+        $vote = $uri.$this->id;
 
+        error_log(print_r($uri, true));
+
+        $vote_cookie = get_option($vote);
+
+        $vote_cookie ? $vote_cookie : 0;
+
+        // error_log(print_r($this->id, true));
+
+        // error_log(print_r($like_count, true));
 
         if (isset($like_count) && is_singular('post')) {
-            ?>
-	        <script type="text/javascript">
-	        // /* <![CDATA[ */
-	            ajax_likes.like_count = <?php echo $like_count; ?>;
-	        // /* ]]> */
-	        //   </script>
-	        <?php
-
-        if (isset($vote_cookie) && is_singular('post') ) {
-            ?>
-	        <script type="text/javascript">
-	        // /* <![CDATA[ */
-	            ajax_likes.vote_cookie = <?php echo $vote_cookie; ?>;
-	        // /* ]]> */
-	        //   </script>
-	        <?php
-	    }
 
         	wp_localize_script($this->plugin_name.'content_likes', 'ajax_likes', ['like_count' => $like_count , 'vote_cookie' => $vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
     	}

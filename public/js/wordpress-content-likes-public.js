@@ -2,14 +2,20 @@
     let _is_cookie_set = false;
     let cur_url = $(location).attr('href');
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
+    let like_count_div = '';
+    let repeated = 1;
     $( document ).ready(function() {
-        if (readCookie('hasVoted' + sub_cur_url ) && ajax_object.vote_cookie == 1){
+        if (readCookie('hasVoted' + sub_cur_url ) && ajax_likes.vote_cookie == 1){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
+        if ( ajax_likes.like_count !== undefined && ajax_likes.like_count != 0){
+            // if (ajax_likes.like_count == 0){
+            //     var like_count_div = '<div class="likes-count"></div>';
+            // } else {
+                var like_count_div = '<div class="likes-count">' + ajax_likes.like_count + '</div>';
+            //}
 
-        if ( ajax_object.like_count !== undefined  &&  ajax_object.like_count >= 1){
-            var like_count_div = '<div class="likes-count">' + ajax_object.like_count + '</div>';
            $('.social-likes').append(like_count_div);
         }
 
@@ -26,12 +32,13 @@
             var $button = $(this);
             clicktype = $button.attr('clicktype');
 
+            repeated++;
+
             if (clicktype ==  0){
                 newclicktype = 1;
             } else if (clicktype == 1){
                newclicktype = 2;
                $('.social-likes').removeClass( 'active' );
-
             } else if (clicktype == 2){
                 newclicktype = 1;
                 $('.social-likes').addClass( 'active' );
@@ -62,13 +69,16 @@
                 dataType: 'json',
                 success : function( response ){
                      $button.attr('clicktype', newclicktype);
-                     if (response == 1 ) {
+                     if (response == 1 && repeated == 2) {
                          $('.social-likes').append('<div class="likes-count">' + response + '</div>');
                          console.log(response);
                          console.log('after submit');
-                     } else {
+                     }
+                     else {
                         $('.likes-count').html('<div>' +  response + '</div>');
                            console.log('after submit');
+                           console.log(response);
+
                     }
                 }
             });

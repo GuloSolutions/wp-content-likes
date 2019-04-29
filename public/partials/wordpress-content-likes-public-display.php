@@ -15,9 +15,9 @@
 // <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
 
-function _s_like_button() {
-
-            $content = <<<EOS
+function _s_like_button()
+{
+    $content = <<<EOS
 <a role="button" clicktype=0 class="social social-likes">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                      width="35px" height="35px" viewBox="0 0 37 37" style="enable-background:new 0 0 37 37;" xml:space="preserve">
@@ -40,8 +40,5 @@ function _s_like_button() {
             </svg>
         </a>
 EOS;
-        return $content;
-
+    return $content;
 }
-
-

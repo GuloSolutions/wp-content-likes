@@ -45,6 +45,9 @@ class Wordpress_Content_Likes_Public
 
     private $id;
 
+    private $vote;
+
+
     /**
      * Initialize the class and set its properties.
      *
@@ -101,10 +104,11 @@ class Wordpress_Content_Likes_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-
-        wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version);
-        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version, false);
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['like_count', 'vote_cookie', 'ajaxurl' => admin_url('admin-ajax.php')]);
+        if (is_singular('post')) {
+        	wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version, false);
+        	wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version, true);
+        	wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
+        }
     }
 
     public function register_like_shortcode()
@@ -114,7 +118,7 @@ class Wordpress_Content_Likes_Public
 
     public function print_like_button()
     {
-    	return _s_like_button();
+        return _s_like_button();
     }
 
     public function _s_likebtn__handler()
@@ -127,74 +131,90 @@ class Wordpress_Content_Likes_Public
 
         $newvote = $_POST['newvote'];
 
-        $vote = substr($cookie, 25).$this->postid;
+        $this->vote = substr($cookie, 25).$this->postid;
 
         $stored = get_post_meta($this->postid, 'likes')[0];
 
         error_log(print_r("this is stored", true));
         error_log(print_r($stored, true));
 
-        if (!$stored ) {
-        	add_post_meta( $this->postid, 'likes', 1 );
-        	echo json_encode($result);
-        	wp_die();
+        if (!$stored) {
+            add_post_meta($this->postid, 'likes', 1);
+            echo json_encode(1);
+            wp_die();
         }
 
-        $old_vote = get_option($vote);
+        $old_vote = get_option($this->vote);
 
-        $result = $stored[0];
-         $result = (int)$result;
+        $result = $stored;
+        $result = (int)$result;
 
         if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
-            $result[0]++;
+            $result++;
         } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
-            $result[0]--;
+            $result--;
         }
+
+        error_log(print_r("this is resultt", true));
+        error_log(print_r($result, true));
 
         $cookie = substr($cookie, 25);
         $cookie = $cookie.$this->postid;
 
-        update_option($vote, $newvote);
-
-        error_log(print_r($result, true));
+        update_option($this->vote, $newvote);
 
         $saved = update_post_meta($this->postid, 'likes', $result);
-        error_log(print_r($saved, true));
+
+        error_log(print_r('this is new vote', true));
+
+        error_log(print_r($newvote, true));
+
         echo json_encode($result);
 
         wp_die();
     }
 
-    public function _s_get_post_id() {
-
-    	$like_count = get_post_meta($this->id,'likes');
-    	//error_log(print_r($like_count, true));
-
+    public function _s_get_post_id()
+    {
+        $like_count = get_post_meta($this->id, 'likes');
     }
 
     public function _s_export_liked_count()
-	{
-		$like_count = get_post_meta($this->id,'likes', true);
-		 error_log(print_r($like_count, true));
-		if (isset($like_count)) {
-	        ?>
+    {
+        $like_count = get_post_meta($this->id, 'likes', true);
+
+        $vote_cookie = get_option($this->vote);
+
+        error_log(print_r($this->id, true));
+
+        error_log(print_r($like_count, true));
+
+
+        if (isset($like_count) && is_singular('post')) {
+            ?>
 	        <script type="text/javascript">
 	        // /* <![CDATA[ */
-	            ajax_object.like_count = <?php echo $like_count; ?>;
+	            ajax_likes.like_count = <?php echo $like_count; ?>;
+	        // /* ]]> */
+	        //   </script>
+	        <?php
+
+        if (isset($vote_cookie) && is_singular('post') ) {
+            ?>
+	        <script type="text/javascript">
+	        // /* <![CDATA[ */
+	            ajax_likes.vote_cookie = <?php echo $vote_cookie; ?>;
 	        // /* ]]> */
 	        //   </script>
 	        <?php
 	    }
 
-	    	if (isset($vote)) {
-	        ?>
-	        <script type="text/javascript">
-	        // /* <![CDATA[ */
-	            ajax_object.vote_cookie = <?php echo $vote_cookie; ?>;
-	        // /* ]]> */
-	        //   </script>
-	        <?php
-	    }
+        	wp_localize_script($this->plugin_name.'content_likes', 'ajax_likes', ['like_count' => $like_count , 'vote_cookie' => $vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
+    	}
+   }
 
-	}
+    public function _s_get_id() {
+    	global $post;
+    	$this->id = $post->ID;
+    }
 }

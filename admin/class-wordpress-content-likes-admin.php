@@ -120,7 +120,8 @@ class Wordpress_Content_Likes_Admin
         add_meta_box("post-like-meta-box", __('Likes for this post', 'textdomain'), 'wpdocs_my_display_callback', 'post', 'side', 'high', null);
         function wpdocs_my_display_callback($post)
         {
-            $content = '<div>' . $post->ID . '</div>';
+            $num_likes = get_post_meta($post->ID,'likes', true);
+            $content = '<div>' . $num_likes . '</div>';
             echo $content;
         }
     }

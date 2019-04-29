@@ -4,19 +4,18 @@
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
 
     let like_count_div = '';
-    let repeated = 1;
 
     $( document ).ready(function() {
         if (readCookie('hasVoted' + sub_cur_url ) && ajax_likes.vote_cookie == 1){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
-        if ( ajax_likes.like_count !== undefined || ajax_likes.like_count != 0){
-            // if (ajax_likes.like_count == 0){
-            //     var like_count_div = '<div class="likes-count"></div>';
-            // } else {
+        if ( ajax_likes.like_count !== undefined){
+             if (ajax_likes.like_count == 0){
+                 var like_count_div = '<div class="likes-count">LIKE</div>';
+             } else {
                 var like_count_div = '<div class="likes-count">' + ajax_likes.like_count + '</div>';
-            //}
+            }
 
            $('.social-likes').append(like_count_div);
         }
@@ -34,10 +33,8 @@
             var $button = $(this);
             clicktype = $button.attr('clicktype');
 
-            repeated++;
-
             if (clicktype ==  0){
-                newclicktype = 1;
+                newclicktype = 2;
             } else if (clicktype == 1){
                newclicktype = 2;
                $('.social-likes').removeClass( 'active' );
@@ -59,9 +56,7 @@
             var likedata = {
                 'action': 'like_handler',
                 'postid': postid,
-                'voted': sub_cur_url,
-                'vote': clicktype,
-                'newvote': newclicktype
+                'vote': clicktype
             };
 
             jQuery.post({
@@ -71,17 +66,14 @@
                 dataType: 'json',
                 success : function( response ){
                      $button.attr('clicktype', newclicktype);
-                     if (response == 1 && repeated == 2) {
-                         $('.social-likes').append('<div class="likes-count">' + response + '</div>');
-                         console.log(response);
-                         console.log('after submit');
-                     }
-                     else {
-                        $('.likes-count').html('<div>' +  response + '</div>');
-                           console.log('after submit');
-                           console.log(response);
+                     $('.likes-count').html('<div>' +  response + '</div>');
+                     $('social-likes').toggleClass('active');
 
-                    }
+                     if ($('.social-likes').hasClass( 'active' )){
+                         $('.social-likes').removeClass('active');
+                     } else {
+                          $('.social-likes').addClass('active');
+                     }
                 }
             });
         });

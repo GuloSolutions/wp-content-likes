@@ -182,6 +182,7 @@ class Wordpress_Content_Likes
         $this->loader->add_action('init', $plugin_public, '_s_get_post_id', 10);
         $this->loader->add_action('wp_head', $plugin_public, '_s_export_liked_count', 20);
         $this->loader->add_action('wp_head', $plugin_public, '_s_get_id', 10);
+
     }
 
     /**

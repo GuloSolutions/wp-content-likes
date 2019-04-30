@@ -154,6 +154,7 @@ class Wordpress_Content_Likes_Public
             echo json_encode($result);
             wp_die();
         }
+
         $result = $stored;
         if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
             $result++;

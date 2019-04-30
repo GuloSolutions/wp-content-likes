@@ -52,6 +52,9 @@ class Wordpress_Content_Likes_Admin
     {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+        global $post;
+        // $this->post_ids = $this->get_the_posts();
+        // error_log(print_r($this->post_ids, true));
     }
 
     /**
@@ -161,5 +164,30 @@ class Wordpress_Content_Likes_Admin
             $content = '<div>' . $num_likes . '</div>';
             echo $content;
         }
+    }
+
+    public function likes_filter_posts_columns($columns)
+    {
+        $columns['likes'] = __('Likes');
+        return $columns;
+    }
+
+    public function smashing_realestate_custom_column()
+    {
+        add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
+
+        function likes_custom_column($column, $post_id)
+        {
+            if ('likes' == $column) {
+                if (get_post_meta($post_id, 'likes', true)) {
+                    echo get_post_meta($post_id, 'likes', true);
+                }
+            }
+        }
+    }
+
+    public function get_the_posts()
+    {
+        return get_post_types(array('post_type', 'post'));
     }
 }

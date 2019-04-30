@@ -45,6 +45,8 @@ class Wordpress_Content_Likes_Public
 
     private $id;
 
+    private $page_id;
+
     private $vote;
 
 
@@ -105,7 +107,6 @@ class Wordpress_Content_Likes_Public
          * class.
          */
         wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version, false);
-
         //if (is_singular('post')) {
         wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version, true);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
@@ -124,8 +125,9 @@ class Wordpress_Content_Likes_Public
 
     public function _s_likebtn__handler()
     {
-        $new_vote = $old_vote = 0;
-        $this->postid = $_POST['postid'];
+        $new_vote = $old_vote = $result = $stored = 0;
+
+        $this->postid = $_POST['content_like_id'];
         $clickvote = $_POST['vote'];
 
         $ip = $this->_s_sl_get_ip();
@@ -134,28 +136,28 @@ class Wordpress_Content_Likes_Public
 
         $stored = get_post_meta($this->postid, 'likes')[0];
 
-                error_log(print_r('this is stored', true));
-                error_log(print_r($stored, true));
-
+        error_log(print_r('this is stored', true));
+        error_log(print_r($stored, true));
 
         $old_vote = get_option($ip);
 
-        if ($old_vote == false) {
-
-        	if ($stored == 0 || $stored === false){
-        		$stored = 1;
-        	} else {
-            	$stored++;
-            }
-
-            update_post_meta($this->postid, 'likes', $stored);
+        if ($old_vote == false && $stored === false) {
+        	$result = 1;
+        	$stored = 1;
+            update_post_meta($this->postid, 'likes', $result);
             update_option($ip, 1);
-            echo json_encode($stored);
+            echo json_encode($result);
+            wp_die();
+        } elseif ($old_vote == false && $stored >= 0){
+        	$stored++;
+        	$result = $stored;
+        	update_post_meta($this->postid, 'likes', $stored);
+        	update_option($ip, 1);
+        	echo json_encode($result);
             wp_die();
         }
 
         $result = $stored;
-        $result = (int)$result;
 
         if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
             $result++;
@@ -176,8 +178,8 @@ class Wordpress_Content_Likes_Public
             error_log(sprintf("The save for like from ip %s was not successful"), $ip);
         }
 
-           error_log(print_r('this is result', true));
-                        error_log(print_r($result, true));
+        error_log(print_r('this is result', true));
+        error_log(print_r($result, true));
         echo json_encode($result);
 
         wp_die();
@@ -204,9 +206,9 @@ class Wordpress_Content_Likes_Public
         error_log(print_r($like_count));
 
 
-        if (isset($like_count) && is_singular('post')) {
+        //if (isset($like_count) && is_singular('post')) {
             wp_localize_script($this->plugin_name.'content_likes', 'ajax_likes', ['like_count' => $like_count , 'vote_cookie' => $vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
-        }
+        //}
     }
 
     public function _s_get_id()

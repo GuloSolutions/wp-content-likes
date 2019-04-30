@@ -120,7 +120,7 @@ class Wordpress_Content_Likes_Admin
         add_meta_box("post-like-meta-box", __('Likes for this post', 'textdomain'), 'wpdocs_my_display_callback', 'post', 'side', 'high', null);
         function wpdocs_my_display_callback($post)
         {
-            $num_likes = get_post_meta($post->ID,'likes', true);
+            $num_likes = get_post_meta($post->ID, 'likes', true);
             $content = '<div>' . $num_likes . '</div>';
             echo $content;
         }
@@ -131,7 +131,8 @@ class Wordpress_Content_Likes_Admin
         add_meta_box('page-like-meta-box', __('Likes for this page', 'textdomain'), 'wpdocs_my_display_callback_page', 'page', 'side', 'high', null);
         function wpdocs_my_display_callback_page($page)
         {
-            $content = '<div>' . $page->ID . '</div>';
+            $num_likes = get_post_meta($page->ID, 'likes', true);
+            $content = '<div>'. $num_likes . '</div>';
             echo $content;
         }
     }
@@ -142,15 +143,21 @@ class Wordpress_Content_Likes_Admin
         global $pagenow;
         $custom_post_id = $_GET['post'];
 
-        error_log(print_r($custom_post_id, true));
+        $args = array(
+           'public'   => true,
+           '_builtin' => false
+        );
 
-        print_r($custom_post_id, true);
+        $post_types = get_post_types($args);
 
-        add_meta_box('custom-post-likes-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_custom_post', $custom_post_id, 'side', 'high', null);
+        foreach ($post_types as $post_type) {
+            add_meta_box('custom-post-likes-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_custom_post', $post_type, 'side', 'high', null);
+        }
+
         function wpdocs_my_display_callback_custom_post($custom_post_id)
         {
-            // $custom_post_id = $_GET['post'];
-            $content = '<div>' . $custom_post_id . '</div>';
+            $num_likes = get_post_meta($custom_post_id, 'likes', true);
+            $content = '<div>' . $num_likes . '</div>';
             echo $content;
         }
     }

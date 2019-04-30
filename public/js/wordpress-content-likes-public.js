@@ -16,7 +16,6 @@
              } else {
                 var like_count_div = '<div class="likes-count">' + ajax_likes.like_count + '</div>';
             }
-
            $('.social-likes').append(like_count_div);
         }
 
@@ -25,10 +24,10 @@
             e.stopPropagation();
 
             var postid;
+            var pageid;
             var clicktype;
             var newclicktype;
             var result;
-            var counter;
 
             var $button = $(this);
             clicktype = $button.attr('clicktype');
@@ -48,14 +47,19 @@
                 $('.social-likes').toggleClass( 'active' );
              }
 
-            if ( typeof($('body[class*="postid"]')) != undefined){
+            if ( $('body[class*="postid"]').length){
                  postid = $('body[class*="postid"]').attr('class').split('postid-');
                  postid = postid[1].split(" ")[0];
             }
 
+            if ( $('body[class*="page-id"]').length){
+                 pageid = $('body[class*="page-id"]').attr('class').split('page-id-');
+                 pageid = pageid[1].split(" ")[0];
+            }
+
             var likedata = {
                 'action': 'like_handler',
-                'postid': postid,
+                'content_like_id': postid ? postid : pageid,
                 'vote': clicktype
             };
 

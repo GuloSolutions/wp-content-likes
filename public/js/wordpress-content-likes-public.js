@@ -12,9 +12,9 @@
         }
         if ( ajax_likes.like_count !== undefined){
              if (ajax_likes.like_count == 0){
-                 var like_count_div = '<div class="likes-count">LIKE</div>';
+                 like_count_div = '<div class="likes-count">LIKE</div>';
              } else {
-                var like_count_div = '<div class="likes-count">' + ajax_likes.like_count + '</div>';
+                like_count_div = '<div class="likes-count">' + ajax_likes.like_count + '</div>';
             }
            $('.social-likes').append(like_count_div);
         }

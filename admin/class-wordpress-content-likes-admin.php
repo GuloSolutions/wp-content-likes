@@ -154,8 +154,9 @@ class Wordpress_Content_Likes_Admin
             add_meta_box('custom-post-likes-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_custom_post', $post_type, 'side', 'high', null);
         }
 
-        function wpdocs_my_display_callback_custom_post($custom_post_id)
+        function wpdocs_my_display_callback_custom_post()
         {
+            $custom_post_id = $_GET['post'];
             $num_likes = get_post_meta($custom_post_id, 'likes', true);
             $content = '<div>' . $num_likes . '</div>';
             echo $content;

@@ -172,11 +172,31 @@ class Wordpress_Content_Likes_Admin
         return $columns;
     }
 
+    public function likes_filter_pages_columns($columns)
+    {
+        $columns['likes'] = __('Likes');
+        return $columns;
+    }
+
     public function smashing_realestate_custom_column()
     {
         add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
 
         function likes_custom_column($column, $post_id)
+        {
+            if ('likes' == $column) {
+                if (get_post_meta($post_id, 'likes', true)) {
+                    echo get_post_meta($post_id, 'likes', true);
+                }
+            }
+        }
+    }
+
+    public function likes_pages_custom_column()
+    {
+        add_action('manage_pages_custom_column', 'pagelikes__custom_column', 10, 2);
+
+        function pagelikes__custom_column($column, $post_id)
         {
             if ('likes' == $column) {
                 if (get_post_meta($post_id, 'likes', true)) {

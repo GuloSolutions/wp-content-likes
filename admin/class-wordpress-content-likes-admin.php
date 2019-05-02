@@ -113,8 +113,31 @@ class Wordpress_Content_Likes_Admin
 
         function wordpress_content_likes_dashboard_widget_function()
         {
-            $content = "The highest rated blogs are: ";
-            echo $content;
+            global $wpdb;
+            $pages=$posts=$custom_posts='';
+
+            $query = "SELECT max(cast(meta_value as unsigned)) FROM 4ti0l_postmeta WHERE meta_key='likes'";
+            $the_max = $wpdb->get_var($query);
+
+            error_log(print_r($the_max, true));
+
+            if (isset(get_option('my_option_name')['track_pages'])) {
+                $pages = get_option('my_option_name')['track_pages'];
+                $content1 = sprintf("<p>The highest rated blogs are: </p>", $the_max);
+                echo $content1;
+            }
+
+            if (isset(get_option('my_option_name')['track_posts'])) {
+                $posts = get_option('my_option_name')['track_posts'];
+                $content2 = "The highest rated posts are: ";
+                echo $content2;
+            }
+
+            if (isset(get_option('my_option_name')['track_custom_posts'])) {
+                $custom_posts = get_option('my_option_name')['track_custom_posts'];
+                $content3 = "<p>The highest rated custom posts are: </p>";
+                echo $content3;
+            }
         }
     }
 

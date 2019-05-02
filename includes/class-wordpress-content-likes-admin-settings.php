@@ -123,4 +123,9 @@ class WordPress_Content_Likes_Admin_Settings
             isset($this->options['track_pages']) ? 'checked' : ''
         );
     }
+
+    public function print_section_info()
+    {
+        print '';
+    }
 }

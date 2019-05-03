@@ -53,8 +53,6 @@ class Wordpress_Content_Likes_Admin
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         global $post;
-        // $this->post_ids = $this->get_the_posts();
-        // error_log(print_r($this->post_ids, true));
     }
 
     /**
@@ -114,29 +112,63 @@ class Wordpress_Content_Likes_Admin
         function wordpress_content_likes_dashboard_widget_function()
         {
             global $wpdb;
+            $pref = $wpdb->prefix;
             $pages=$posts=$custom_posts='';
 
-            $query = "SELECT max(cast(meta_value as unsigned)) FROM 4ti0l_postmeta WHERE meta_key='likes'";
-            $the_max = $wpdb->get_var($query);
+            // $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
+            //     FROM {$pref}posts AS P
+            //     LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
+            //     WHERE P.post_type = 'page' and P.post_status = 'publish' and ( meta_key = 'likes' )
+            //     GROUP BY P.ID DESC";
 
-            error_log(print_r($the_max, true));
+            // $the_max = $wpdb->get_row($query);
 
-            if (isset(get_option('my_option_name')['track_pages'])) {
-                $pages = get_option('my_option_name')['track_pages'];
-                $content1 = sprintf("<p>The highest rated blogs are: </p>", $the_max);
-                echo $content1;
+            // error_log(print_r($the_max, true));
+
+            if (isset(get_option('my_option_name')['track_posts']) && get_option('my_option_name')['track_posts'] == 'on') {
+                if (get_option('my_option_name')['track_posts'] == 'on') {
+                    $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
+                        FROM {$pref}posts AS P
+                        LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
+                        WHERE P.post_type = 'post' and P.post_status = 'publish' and ( meta_key = 'likes' )
+                        GROUP BY P.ID DESC";
+
+                    $the_max = $wpdb->get_row($query);
+
+                    $posts = get_option('my_option_name')['track_posts'];
+                    $content1 = sprintf("<p>The highest rated blog --  %s -- has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
+                    echo $content1;
+                }
             }
 
-            if (isset(get_option('my_option_name')['track_posts'])) {
-                $posts = get_option('my_option_name')['track_posts'];
-                $content2 = "The highest rated posts are: ";
-                echo $content2;
+            if (isset(get_option('my_option_name')['track_pages'])) {
+                if (get_option('my_option_name')['track_pages'] == 'on') {
+                    $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
+                        FROM {$pref}posts AS P
+                        LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
+                        WHERE P.post_type = 'page' and P.post_status = 'publish' and ( meta_key = 'likes' )
+                        GROUP BY P.ID DESC";
+
+                    $the_max = $wpdb->get_row($query);
+
+                    $page = get_option('my_option_name')['track_pages'];
+                    $content2 = sprintf("<p>The highest rated page %s has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
+                    echo $content2;
+                }
             }
 
             if (isset(get_option('my_option_name')['track_custom_posts'])) {
-                $custom_posts = get_option('my_option_name')['track_custom_posts'];
-                $content3 = "<p>The highest rated custom posts are: </p>";
-                echo $content3;
+                if (get_option('my_option_name')['track_custom_posts'] == 'on') {
+                    $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
+                        FROM {$pref}posts AS P
+                        LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
+                        WHERE P.post_type NOT IN ('post', 'page')  and P.post_status = 'publish' and ( meta_key = 'likes' )
+                        GROUP BY P.ID DESC";
+
+                    $custom_posts = get_option('my_option_name')['track_custom_posts'];
+                    $content3 = sprintf("<p>The highest custom post %s has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
+                    echo $content3;
+                }
             }
         }
     }

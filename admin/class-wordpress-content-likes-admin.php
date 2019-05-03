@@ -115,16 +115,6 @@ class Wordpress_Content_Likes_Admin
             $pref = $wpdb->prefix;
             $pages=$posts=$custom_posts='';
 
-            // $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
-            //     FROM {$pref}posts AS P
-            //     LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
-            //     WHERE P.post_type = 'page' and P.post_status = 'publish' and ( meta_key = 'likes' )
-            //     GROUP BY P.ID DESC";
-
-            // $the_max = $wpdb->get_row($query);
-
-            // error_log(print_r($the_max, true));
-
             if (isset(get_option('my_option_name')['track_posts']) && get_option('my_option_name')['track_posts'] == 'on') {
                 if (get_option('my_option_name')['track_posts'] == 'on') {
                     $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
@@ -150,7 +140,6 @@ class Wordpress_Content_Likes_Admin
                         GROUP BY P.ID DESC";
 
                     $the_max = $wpdb->get_row($query);
-
                     $page = get_option('my_option_name')['track_pages'];
                     $content2 = sprintf("<p>The highest rated page %s has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
                     echo $content2;
@@ -159,14 +148,25 @@ class Wordpress_Content_Likes_Admin
 
             if (isset(get_option('my_option_name')['track_custom_posts'])) {
                 if (get_option('my_option_name')['track_custom_posts'] == 'on') {
-                    $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
-                        FROM {$pref}posts AS P
-                        LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
-                        WHERE P.post_type NOT IN ('post', 'page')  and P.post_status = 'publish' and ( meta_key = 'likes' )
-                        GROUP BY P.ID DESC";
+                    $args = array(
+                       'public'   => true,
+                       '_builtin' => false,
+                    );
 
-                    $custom_posts = get_option('my_option_name')['track_custom_posts'];
-                    $content3 = sprintf("<p>The highest custom post %s has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
+                    $output = 'names';
+                    $operator = 'and';
+
+                    $post_types = get_post_types($args, $output, $operator);
+
+                    $custom_posts = implode(', ', $post_types);
+
+                    $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
+                    FROM {$pref}posts AS P
+                    LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
+                    WHERE P.post_type IN ({$custom_posts}) AND NOT ('post', 'page') and P.post_status = 'publish' and ( meta_key = 'likes' )
+                    GROUP BY P.ID DESC";
+
+                    $content3 = sprintf("<p>The highest rated custom post -- %s -- has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
                     echo $content3;
                 }
             }

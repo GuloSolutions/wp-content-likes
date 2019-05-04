@@ -163,7 +163,7 @@ class Wordpress_Content_Likes_Admin
                     $query = "SELECT max(cast(PM.meta_value as unsigned)) AS LIKES,  P.ID, P.POST_TITLE
                     FROM {$pref}posts AS P
                     LEFT JOIN {$pref}postmeta AS PM on PM.post_id = P.ID
-                    WHERE P.post_type IN ({$custom_posts}) AND NOT ('post', 'page') and P.post_status = 'publish' and ( meta_key = 'likes' )
+                    WHERE P.post_type IN ({$custom_posts}) AND P.post_type NOT IN ('post', 'page') and P.post_status = 'publish' and ( meta_key = 'likes' )
                     GROUP BY P.ID DESC";
 
                     $content3 = sprintf("<p>The highest rated custom post -- %s -- has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);

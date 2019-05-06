@@ -168,9 +168,6 @@ class Wordpress_Content_Likes
         $this->loader->add_action('init', $plugin_admin, 'smashing_realestate_custom_column', 10);
         $this->loader->add_action('init', $plugin_admin, 'likes_pages_custom_column', 10);
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10, 2);
-
-
-
     }
 
     /**

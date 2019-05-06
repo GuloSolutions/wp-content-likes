@@ -140,7 +140,11 @@ class Wordpress_Content_Likes_Public
         if (!$old_vote && !$stored) {
             $result = 1;
             $stored = 1;
-            update_post_meta($this->postid, 'likes', $result);
+            // if key does nto exist
+            $update_response = update_post_meta($this->postid, 'likes', $stored);
+            if (!is_numeric($update_response)) {
+                add_post_meta($this->postid, 'likes', $stored);
+            }
             update_option($ip, 1);
             echo json_encode($result);
             wp_die();

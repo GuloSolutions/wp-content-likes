@@ -26,8 +26,8 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (! defined('WPINC')) {
+    die;
 }
 
 /**
@@ -35,36 +35,38 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WORDPRESS_CONTENT_LIKES_VERSION', '1.0.0' );
+define('WORDPRESS_CONTENT_LIKES_VERSION', '1.0.0');
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-wordpress-content-likes-activator.php
  */
-function activate_wordpress_content_likes() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes-activator.php';
-	Wordpress_Content_Likes_Activator::activate();
+function activate_wordpress_content_likes()
+{
+    require_once plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-activator.php';
+    Wordpress_Content_Likes_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-wordpress-content-likes-deactivator.php
  */
-function deactivate_wordpress_content_likes() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes-deactivator.php';
-	Wordpress_Content_Likes_Deactivator::deactivate();
+function deactivate_wordpress_content_likes()
+{
+    require_once plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-deactivator.php';
+    Wordpress_Content_Likes_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_wordpress_content_likes' );
-register_deactivation_hook( __FILE__, 'deactivate_wordpress_content_likes' );
+register_activation_hook(__FILE__, 'activate_wordpress_content_likes');
+register_deactivation_hook(__FILE__, 'deactivate_wordpress_content_likes');
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes.php';
-require plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes-admin-settings.php';
-require plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes-admin-widget.php';
+require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes.php';
+require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-settings.php';
+require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-widget.php';
 
 
 
@@ -77,16 +79,15 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wordpress-content-likes-ad
  *
  * @since    1.0.0
  */
-function run_wordpress_content_likes() {
-
-	 $plugin_name = get_plugin_data(__FILE__, $markup = true, $translate = true)['Name'];
+function run_wordpress_content_likes()
+{
+    $plugin_name = get_plugin_data(__FILE__, $markup = true, $translate = true)['Name'];
     // load settings
     if (is_admin() && !is_null($plugin_name)) {
         $my_settings_page = new Wordpress_Content_Likes_Admin_Settings($plugin_name);
     }
 
-	$plugin = new Wordpress_Content_Likes();
-	$plugin->run();
-
+    $plugin = new Wordpress_Content_Likes();
+    $plugin->run();
 }
 run_wordpress_content_likes();

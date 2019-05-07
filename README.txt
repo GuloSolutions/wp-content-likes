@@ -22,7 +22,7 @@ Track likes for WP published content in posts, pages, custom posts.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Choose what to track under Settings
 4. Add the shortcode (`[wordpress-content-likes_like_button]`) to the block editor for a the post, plage or plugin
-5. Alternatively, display the like button but `<?php echo do_shortcode([wordpress-content-likes_like_button]); ?>`
+5. Alternatively, display the like button but `<?php echo do_shortcode('[wordpress-content-likes_like_button]'); ?>`
 
 
 == Frequently Asked Questions ===

@@ -12,7 +12,7 @@
         }
         if ( ajax_likes.like_count !== undefined){
              if (ajax_likes.like_count == 0){
-                 like_count_div = '<div class="likes-count">LIKE</div>';
+                 like_count_div = '<div class="likes-count"><div>LIKE</div></div>';
              } else {
                 like_count_div = '<div class="likes-count">' + ajax_likes.like_count + '</div>';
             }
@@ -69,6 +69,8 @@
                 data : likedata,
                 dataType: 'json',
                 success : function( response ){
+
+                    console.log(response)
                      $button.attr('clicktype', newclicktype);
                      $('.likes-count').html('<div>' +  response + '</div>');
                      $('social-likes').toggleClass('active');

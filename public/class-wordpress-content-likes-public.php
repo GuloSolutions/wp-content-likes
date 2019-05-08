@@ -131,16 +131,16 @@ class Wordpress_Content_Likes_Public
 
         $ip = $this->_s_sl_get_ip();
 
-        $ip = 'user_likes' .$ip;
+        $ip = $this->postid.'user_likes'.$ip;
 
         $stored = get_post_meta($this->postid, 'likes', true);
 
         $old_vote = get_option($ip);
 
-        if (!$old_vote && !$stored) {
+        if (!$old_vote && !isset($stored)) {
             $result = 1;
             $stored = 1;
-            // if key does nto exist
+            // if key does not exist
             $update_response = update_post_meta($this->postid, 'likes', $stored);
             if (!is_numeric($update_response)) {
                 add_post_meta($this->postid, 'likes', $stored);
@@ -148,36 +148,37 @@ class Wordpress_Content_Likes_Public
             update_option($ip, 1);
             echo json_encode($result);
             wp_die();
-        }
-
-        if (!$old_vote && $stored >= 0) {
+        } elseif (!$old_vote && $stored >= 0) {
             $stored+=1;
             $result = $stored;
             update_post_meta($this->postid, 'likes', $stored);
             update_option($ip, 1);
             echo json_encode($result);
             wp_die();
+        } else {
+            if (isset($stored)) {
+                $result = $stored;
+            }
+
+            if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
+                $result++;
+                $new_vote = 1;
+            } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
+                $result--;
+                $new_vote = 2;
+            }
+
+            if ($result < 0) {
+                $result = 0;
+            }
+
+            update_option($ip, $new_vote);
+            update_post_meta($this->postid, 'likes', $result);
+
+            echo json_encode($result);
+
+            wp_die();
         }
-
-        $result = $stored;
-        if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
-            $result++;
-            $new_vote = 1;
-        } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
-            $result--;
-            $new_vote = 2;
-        }
-
-        if ($result < 0) {
-            $result = 0;
-        }
-
-        update_option($ip, $new_vote);
-        update_post_meta($this->postid, 'likes', $result);
-
-        echo json_encode($result);
-
-        wp_die();
     }
 
     public function _s_get_post_id()
@@ -192,7 +193,7 @@ class Wordpress_Content_Likes_Public
 
         $ip = $this->_s_sl_get_ip();
 
-        $ip = 'user_likes' . $ip;
+        $ip = $this->id.'user_likes'.$ip;
 
         $vote_cookie = get_option($ip);
 

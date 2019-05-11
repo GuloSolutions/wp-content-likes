@@ -6,15 +6,15 @@
     let like_count_div = '';
 
     $( document ).ready(function() {
-        if (readCookie('hasVoted' + sub_cur_url ) && ajax_likes.vote_cookie == 1){
+        if (readCookie('hasVoted' + sub_cur_url ) && vote_cookie == 1){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
-        if ( ajax_likes.like_count !== undefined){
-             if (ajax_likes.like_count == 0){
-                 like_count_div = '<div class="likes-count"><div>LIKE</div></div>';
+
+        if ( like_count !== undefined){
+             if (like_count == 0){like_count_div = '<div class="likes-count">LIKE</div>';
              } else {
-                like_count_div = '<div class="likes-count">' + ajax_likes.like_count + '</div>';
+                like_count_div = '<div class="likes-count">' + like_count + '</div>';
             }
            $('.social-likes').append(like_count_div);
         }
@@ -69,12 +69,8 @@
                 data : likedata,
                 dataType: 'json',
                 success : function( response ){
-
-                    console.log(response)
                      $button.attr('clicktype', newclicktype);
                      $('.likes-count').html('<div>' +  response + '</div>');
-                     $('social-likes').toggleClass('active');
-
                      if ($('.social-likes').hasClass( 'active' )){
                          $('.social-likes').removeClass('active');
                      } else {

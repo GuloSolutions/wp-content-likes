@@ -49,7 +49,6 @@ class Wordpress_Content_Likes_Public
 
     private $vote;
 
-
     /**
      * Initialize the class and set its properties.
      *
@@ -106,8 +105,8 @@ class Wordpress_Content_Likes_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-        wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . 'js/jquery.js', array( ), $this->version, false);
-        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version, true);
+        wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . '/js/jquery.js', array( ), $this->version, false);
+        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
@@ -137,6 +136,7 @@ class Wordpress_Content_Likes_Public
 
         $old_vote = get_option($ip);
 
+
         if (!$old_vote && !isset($stored)) {
             $result = 1;
             $stored = 1;
@@ -148,48 +148,43 @@ class Wordpress_Content_Likes_Public
             update_option($ip, 1);
             echo json_encode($result);
             wp_die();
-        } elseif (!$old_vote && $stored >= 0) {
+        }
+        if (!$old_vote && $stored >= 0) {
             $stored+=1;
             $result = $stored;
             update_post_meta($this->postid, 'likes', $stored);
             update_option($ip, 1);
             echo json_encode($result);
             wp_die();
-        } else {
-            if (isset($stored)) {
-                $result = $stored;
-            }
-
-            if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
-                $result++;
-                $new_vote = 1;
-            } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
-                $result--;
-                $new_vote = 2;
-            }
-
-            if ($result < 0) {
-                $result = 0;
-            }
-
-            update_option($ip, $new_vote);
-            update_post_meta($this->postid, 'likes', $result);
-
-            echo json_encode($result);
-
-            wp_die();
         }
-    }
+        if (isset($stored)) {
+            $result = $stored;
+        }
 
-    public function _s_get_post_id()
-    {
-        $like_count = get_post_meta($this->id, 'likes');
+        if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
+            $result++;
+            $new_vote = 1;
+        } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
+            $result--;
+            $new_vote = 2;
+        }
+
+        if ($result < 0) {
+            $result = 0;
+        }
+
+        update_option($ip, $new_vote);
+        update_post_meta($this->postid, 'likes', $result);
+
+        echo json_encode($result);
+
+        wp_die();
     }
 
     public function _s_export_liked_count()
     {
-        $like_count = 0;
-        $like_count = get_post_meta($this->id, 'likes', true);
+        global $post;
+        $like_count = get_post_meta($post->ID, 'likes', true);
 
         $ip = $this->_s_sl_get_ip();
 
@@ -197,15 +192,30 @@ class Wordpress_Content_Likes_Public
 
         $vote_cookie = get_option($ip);
 
-        $vote_cookie ? $vote_cookie : 0;
+        if (!$like_count) {
+            $like_count = 0;
+        }
 
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_likes', ['like_count' => $like_count , 'vote_cookie' => $vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
-    }
+        if (isset($vote_cookie)) {
+            ?>
+        <script type="text/javascript">
+        // /* <![CDATA[ */
+            var vote_cookie = <?php echo $vote_cookie; ?>;
+        // /* ]]> */
+        //   </script>
+        <?php
+        }
 
-    public function _s_get_id()
-    {
-        global $post;
-        $this->id = $post->ID;
+        if (isset($like_count)) {
+            ?>
+        <script type="text/javascript">
+        // /* <![CDATA[ */
+            var like_count = <?php echo $like_count; ?>;
+        // /* ]]> */
+        //   </script>
+        <?php
+        }
+        return;
     }
 
     public function _s_sl_get_ip()

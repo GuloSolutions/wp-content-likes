@@ -2,8 +2,8 @@
     let _is_cookie_set = false;
     let cur_url = $(location).attr('href');
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
-
     let like_count_div = '';
+    let running = 'requestRunning';
 
     $( document ).ready(function() {
 
@@ -24,15 +24,24 @@
             e.preventDefault();
             e.stopPropagation();
 
+
             var postid;
             var pageid;
             var clicktype;
             var newclicktype;
             var result;
+            var disabled;
 
             var $button = $(this);
-            clicktype = $button.attr('clicktype');
 
+            clicktype = $button.attr('clicktype');
+            disabled = $(e.target).closest('a');
+
+            if ( disabled.data(running) ) {
+                return;
+            }
+
+            disabled.data(running, true);
 
             // on new page load
             if (clicktype ==  0 && vote_cookie == 1){
@@ -52,7 +61,7 @@
                 newclicktype = 1;
             }
 
-             $button.attr('clicktype', newclicktype);
+            $button.attr('clicktype', newclicktype);
 
             if (readCookie('hasVoted' + sub_cur_url) === null ){
                 createCookie('hasVoted', 1, 60);
@@ -73,13 +82,16 @@
                 'content_like_id': postid ? postid : pageid,
             };
 
-            jQuery.post({
+            jQuery.ajax({
                 url : ajax_object.ajaxurl,
                 type : 'POST',
                 data : likedata,
                 dataType: 'json',
                 success : function( response ){
                      $('.likes-count').text(response);
+                },
+                complete: function(){
+                    disabled.data(running, false);
                 }
             });
         });

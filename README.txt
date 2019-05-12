@@ -45,6 +45,10 @@ Track likes for WP published content in posts, pages, custom posts.
 
 * Concatenate post id with IP
 
+1.0.3
+
+* Prevent multiple clicks on like button. Better export of JS vars
+
 
 
 

@@ -126,8 +126,6 @@ class Wordpress_Content_Likes_Public
 
         $this->postid = $_POST['content_like_id'];
 
-        $clickvote = $_POST['vote'];
-
         $ip = $this->_s_sl_get_ip();
 
         $ip = $this->postid.'user_likes'.$ip;
@@ -188,9 +186,13 @@ class Wordpress_Content_Likes_Public
 
         $ip = $this->_s_sl_get_ip();
 
-        $ip = $this->id.'user_likes'.$ip;
+        $ip = $post->ID.'user_likes'.$ip;
 
         $vote_cookie = get_option($ip);
+
+        if (empty($vote_cookie)) {
+            $vote_cookie = 0;
+        }
 
         if (!$like_count) {
             $like_count = 0;

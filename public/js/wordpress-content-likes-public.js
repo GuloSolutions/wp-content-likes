@@ -6,7 +6,8 @@
     let like_count_div = '';
 
     $( document ).ready(function() {
-        if (readCookie('hasVoted' + sub_cur_url ) && vote_cookie == 1){
+
+        if (vote_cookie == 1 && like_count > 0 && readCookie('hasVoted' + sub_cur_url )){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
@@ -32,19 +33,29 @@
             var $button = $(this);
             clicktype = $button.attr('clicktype');
 
-            if (clicktype ==  0){
+
+            // on new page load
+            if (clicktype ==  0 && vote_cookie == 1){
+                $('.social-likes').removeClass( 'active' );
                 newclicktype = 2;
+            } else if (clicktype ==  0 && vote_cookie == 2) {
+                 $('.social-likes').addClass( 'active' );
+                  newclicktype = 1;
+            } else if(clicktype ==  0 && vote_cookie == 0) {
+                 $('.social-likes').addClass( 'active' );
+                  newclicktype = 1;
             } else if (clicktype == 1){
-               newclicktype = 2;
                $('.social-likes').removeClass( 'active' );
+               newclicktype = 2;
             } else if (clicktype == 2){
-                newclicktype = 1;
                 $('.social-likes').addClass( 'active' );
+                newclicktype = 1;
             }
+
+             $button.attr('clicktype', newclicktype);
 
             if (readCookie('hasVoted' + sub_cur_url) === null ){
                 createCookie('hasVoted', 1, 60);
-                $('.social-likes').toggleClass( 'active' );
              }
 
             if ( $('body[class*="postid"]').length){
@@ -60,7 +71,6 @@
             var likedata = {
                 'action': 'like_handler',
                 'content_like_id': postid ? postid : pageid,
-                'vote': clicktype
             };
 
             jQuery.post({
@@ -69,13 +79,7 @@
                 data : likedata,
                 dataType: 'json',
                 success : function( response ){
-                     $button.attr('clicktype', newclicktype);
-                     $('.likes-count').html('<div>' +  response + '</div>');
-                     if ($('.social-likes').hasClass( 'active' )){
-                         $('.social-likes').removeClass('active');
-                     } else {
-                          $('.social-likes').addClass('active');
-                     }
+                     $('.likes-count').text(response);
                 }
             });
         });

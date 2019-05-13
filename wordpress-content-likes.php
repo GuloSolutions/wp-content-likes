@@ -16,7 +16,7 @@
  * Plugin Name:       WordPress Content Likes
  * Plugin URI:        www.gulosolutions.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Gulo Solutions
  * Author URI:        www.gulosolutions.com
  * License:           GPL-2.0+

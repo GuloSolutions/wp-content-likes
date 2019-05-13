@@ -13,7 +13,7 @@
         }
 
         if ( like_count !== undefined){
-             if (like_count == 0){like_count_div = '<div class="likes-count">LIKE</div>';
+             if (like_count == 0){like_count_div = '<div class="likes-count">0</div>';
              } else {
                 like_count_div = '<div class="likes-count">' + like_count + '</div>';
             }

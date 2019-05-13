@@ -233,7 +233,7 @@ class Wordpress_Content_Likes_Admin
         return $columns;
     }
 
-    public function smashing_realestate_custom_column()
+    public function wordpress_content_likes_custom_column()
     {
         add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
 

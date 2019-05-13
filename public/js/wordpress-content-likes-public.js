@@ -13,11 +13,15 @@
         }
 
         if ( like_count !== undefined){
-             if (like_count == 0){like_count_div = '<div class="likes-count">0</div>';
-             } else {
-                like_count_div = '<div class="likes-count">' + like_count + '</div>';
+             if (like_count > 0){
+                 like_count_div = like_count_div = '<div class="likes-count">' + like_count + '</div>';
+                 $('.social-likes').append(like_count_div);
+             }
+             else {
+                like_count_div = '<div class="likes-count"></div>';
+                $('.social-likes').append(like_count_div);
+                $('.likes-count').hide();
             }
-           $('.social-likes').append(like_count_div);
         }
 
        $('.social-likes').on('click', function(e) {
@@ -88,7 +92,12 @@
                 data : likedata,
                 dataType: 'json',
                 success : function( response ){
+                    if (response == 1) {
                      $('.likes-count').text(response);
+                     $('.likes-count').show();
+                    } else {
+                        $('.likes-count').text(response);
+                    }
                 },
                 complete: function(){
                     disabled.data(running, false);

@@ -83,7 +83,7 @@ class Wordpress_Content_Likes_Public
          * class.
          */
 
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/wordpress-content-likes-public.css', array(), $this->version, 'all');
+        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . '/css/wordpress-content-likes-public.css', array(), $this->version, 'all');
     }
 
     /**
@@ -133,7 +133,6 @@ class Wordpress_Content_Likes_Public
         $stored = get_post_meta($this->postid, 'likes', true);
 
         $old_vote = get_option($ip);
-
 
         if (!$old_vote && !isset($stored)) {
             $result = 1;

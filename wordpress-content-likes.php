@@ -16,12 +16,12 @@
  * Plugin Name:       WordPress Content Likes
  * Plugin URI:        https://wordpress.org/plugins/wordpress-content-likes
  * Description:       Track likes for different types of WP content.
- * Version:           1.0.5
+ * Version:           1.0.6
  * Author:            Gulo Solutions, LLC
  * Author URI:        www.gulosolutions.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       wordpress-content-likes
+ * Text Domain:       wp-content-likes
  * Domain Path:       /languages
  */
 
@@ -35,7 +35,7 @@ if (! defined('WPINC')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('WORDPRESS_CONTENT_LIKES_VERSION', '1.0.5');
+define('WORDPRESS_CONTENT_LIKES_VERSION', '1.0.6');
 
 /**
  * The code that runs during plugin activation.

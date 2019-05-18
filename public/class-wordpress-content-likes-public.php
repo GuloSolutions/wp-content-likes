@@ -105,8 +105,7 @@ class Wordpress_Content_Likes_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-        wp_enqueue_script($this->plugin_name. '-jquery', plugin_dir_url(__FILE__) . '/js/jquery.js', array( ), $this->version, false);
-        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', array( $this->plugin_name. '-jquery' ), $this->version);
+        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', array( 'jquery' ), $this->version);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 

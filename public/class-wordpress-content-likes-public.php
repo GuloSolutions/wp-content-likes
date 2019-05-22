@@ -123,13 +123,12 @@ class Wordpress_Content_Likes_Public
     {
         $new_vote = $old_vote = $result = $stored = 0;
 
-        $this->postid = $_POST['content_like_id'];
-
+        $this->postid = sanitize_text_field($_POST['content_like_id']);
         $ip = $this->_s_sl_get_ip();
-
         $ip = $this->postid.'user_likes'.$ip;
 
         $stored = get_post_meta($this->postid, 'likes', true);
+        // $stored = (int)$stored;
 
         $old_vote = get_option($ip);
 
@@ -180,10 +179,14 @@ class Wordpress_Content_Likes_Public
     public function _s_export_liked_count()
     {
         global $post;
+
+        if (!is_single()) {
+            return;
+        }
+
         $like_count = get_post_meta($post->ID, 'likes', true);
 
         $ip = $this->_s_sl_get_ip();
-
         $ip = $post->ID.'user_likes'.$ip;
 
         $vote_cookie = get_option($ip);

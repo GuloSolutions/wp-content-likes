@@ -102,7 +102,8 @@ class WordPress_Content_Likes_Admin_Settings
     {
         printf(
             '<input type="checkbox" id="id_number" name="wp_content_likes_option_name[track_posts]" %s />',
-            isset($this->options['track_posts']) ? 'checked' : '');
+            isset($this->options['track_posts']) ? 'checked' : ''
+        );
     }
 
     /**

@@ -28,14 +28,4 @@
 // If uninstall not called from WordPress, then exit.
 if (! defined('WP_UNINSTALL_PLUGIN')) {
     exit;
-} else {
-    global $wpdb;
-
-    delete_post_meta_by_key('likes');
-
-    $ip_related_options = $wpdb->get_results("SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'user_likes%'");
-
-    foreach ($ip_related_options as $option) {
-        delete_option($option->option_name);
-    }
 }

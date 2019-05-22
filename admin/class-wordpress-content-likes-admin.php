@@ -166,8 +166,8 @@ class Wordpress_Content_Likes_Admin
                     $the_max = $wpdb->get_row($query);
 
                     //if ($the_max && isset($the_max->LIKES) && isset($the_max->POST_TITLE)) {
-                        $content3 = sprintf("<p>The highest rated custom post -- %s -- has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
-                        echo $content3;
+                    $content3 = sprintf("<p>The highest rated custom post -- %s -- has %d likes </p>", $the_max->POST_TITLE, $the_max->LIKES);
+                    echo $content3;
                     //}
                 }
             }

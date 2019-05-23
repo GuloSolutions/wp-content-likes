@@ -3,8 +3,8 @@ Contributors: radboris, zwilson, fsimmons
 Donate link: www.gulosolutions.com
 Tags: likes, kpi, analytics, user activity
 Requires at least: 3.0.1
-Tested up to: 5.1
-Stable tag: 1.0.7
+Tested up to: 5.2
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,7 +65,11 @@ Track likes for WP published content in posts, pages, custom posts.
 1.0.7
 
 * Fixed bug where likes query was returning most recent post
-* Changed amdin options page name, options, saniztized and validated input
+* Changed amdin options page name, options, sanitized and validated input
+
+1.0.8
+
+* Fixed JS error for count not defined on certain pages
 
 
 

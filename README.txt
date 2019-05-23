@@ -62,6 +62,11 @@ Track likes for WP published content in posts, pages, custom posts.
 * Change plugin slug
 * Remove plugin jquery
 
+1.0.7
+
+* Fixed bug where likes query was returning most recent post
+* Changed amdin options page name, options, saniztized and validated input
+
 
 
 

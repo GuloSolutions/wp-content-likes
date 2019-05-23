@@ -105,7 +105,9 @@ class Wordpress_Content_Likes_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', array( 'jquery' ), $this->version);
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', $this->version, true);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
@@ -128,7 +130,6 @@ class Wordpress_Content_Likes_Public
         $ip = $this->postid.'user_likes'.$ip;
 
         $stored = get_post_meta($this->postid, 'likes', true);
-        // $stored = (int)$stored;
 
         $old_vote = get_option($ip);
 

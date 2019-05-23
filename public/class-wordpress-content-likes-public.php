@@ -106,8 +106,7 @@ class Wordpress_Content_Likes_Public
          * class.
          */
 
-        wp_enqueue_script('jquery');
-        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', $this->version, true);
+        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', array('jquery'), $this->version, true);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
@@ -181,7 +180,25 @@ class Wordpress_Content_Likes_Public
     {
         global $post;
 
+        // if not single blog set dummy values for vars and exit
         if (!is_single()) {
+            $vote_cookie = 0;
+            ?>
+            <script type="text/javascript">
+            // /* <![CDATA[ */
+                var vote_cookie = <?php echo $vote_cookie; ?>;
+            // /* ]]> */
+            //   </script>
+            <?php
+
+            $like_count = 0;
+            ?>
+            <script type="text/javascript">
+            // /* <![CDATA[ */
+                var like_count = <?php echo $like_count; ?>;
+            // /* ]]> */
+            //   </script>
+            <?php
             return;
         }
 

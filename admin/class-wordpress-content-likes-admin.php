@@ -118,13 +118,13 @@ class Wordpress_Content_Likes_Admin
 
             if (isset(get_option('wp_content_likes_option_name')['track_posts']) && get_option('wp_content_likes_option_name')['track_posts'] == 'on') {
                 if (get_option('wp_content_likes_option_name')['track_posts'] == 'on') {
-                    $query = "SELECT  max(cast(meta_value as unsigned)) AS LIKES,  $wpdb->posts.ID, $wpdb->posts.POST_TITLE
-                        FROM $wpdb->posts, $wpdb->postmeta
-                        WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
-                        AND $wpdb->postmeta.meta_key = 'likes'
-                        AND $wpdb->posts.post_status = 'publish'
-                        AND $wpdb->posts.post_type = 'post'
-                        AND $wpdb->posts.post_date < NOW()";
+                    $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
+                        LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
+                            where  meta_value = (
+                                select MAX(meta_value) from  {$pref}postmeta where meta_key = 'likes'
+                            )
+                        and meta_key = 'likes'
+                        and {$pref}posts.post_type = 'post'";
 
                     $the_max_posts = $wpdb->get_row($query);
 
@@ -137,13 +137,13 @@ class Wordpress_Content_Likes_Admin
 
             if (isset(get_option('wp_content_likes_option_name')['track_pages'])) {
                 if (get_option('wp_content_likes_option_name')['track_pages'] == 'on') {
-                    $query = "SELECT  max(cast(meta_value as unsigned)) AS LIKES,  $wpdb->posts.ID, $wpdb->posts.POST_TITLE
-                        FROM $wpdb->posts, $wpdb->postmeta
-                        WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
-                        AND $wpdb->postmeta.meta_key = 'likes'
-                        AND $wpdb->posts.post_status = 'publish'
-                        AND $wpdb->posts.post_type = 'page'
-                        AND $wpdb->posts.post_date < NOW()";
+                    $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
+                        LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
+                            where  meta_value = (
+                                select MAX(meta_value) from  {$pref}postmeta where meta_key = 'likes'
+                            )
+                        and meta_key = 'likes'
+                        and {$pref}posts.post_type = 'page'";
 
                     $the_max_pages = $wpdb->get_row($query);
 
@@ -169,13 +169,13 @@ class Wordpress_Content_Likes_Admin
                     $custom_posts = implode("','", $post_types);
                     $custom_posts = "'".$custom_posts."'";
 
-                    $query = "SELECT  max(cast(meta_value as unsigned)) AS LIKES,  $wpdb->posts.ID, $wpdb->posts.POST_TITLE
-                        FROM $wpdb->posts, $wpdb->postmeta
-                        WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
-                        AND $wpdb->postmeta.meta_key = 'likes'
-                        AND $wpdb->posts.post_status = 'publish'
-                        AND $wpdb->posts.post_type IN ({$custom_posts})
-                        AND $wpdb->posts.post_date < NOW()";
+                    $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
+                        LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
+                            where  meta_value = (
+                                select MAX(meta_value) from  {$pref}postmeta where meta_key = 'likes'
+                            )
+                        and meta_key = 'likes'
+                        and {$pref}posts.post_type IN ({$custom_posts})";
 
                     $the_max = $wpdb->get_row($query);
 

@@ -214,7 +214,6 @@ class Wordpress_Content_Likes_Admin
     {
         // Global object containing current admin page
         global $pagenow;
-        $custom_post_id = $_GET['post'];
 
         $args = array(
            'public'   => true,
@@ -229,7 +228,7 @@ class Wordpress_Content_Likes_Admin
 
         function wpdocs_my_display_callback_custom_post()
         {
-            $custom_post_id = $_GET['post'];
+            $custom_post_id = sanitize_text_field($_GET['post']);
             $num_likes = get_post_meta($custom_post_id, 'likes', true);
             $content = '<div>' . $num_likes . '</div>';
             echo $content;

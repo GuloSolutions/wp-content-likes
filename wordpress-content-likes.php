@@ -14,7 +14,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       WordPress Content Likes
- * Plugin URI:        https://wordpress.org/plugins/wordpress-content-likes
+ * Plugin URI:        https://wordpress.org/plugins/wp-content-likes
  * Description:       Track likes for different types of WP content.
  * Version:           1.0.8
  * Author:            Gulo Solutions, LLC

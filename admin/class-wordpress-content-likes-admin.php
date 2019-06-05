@@ -190,48 +190,60 @@ class Wordpress_Content_Likes_Admin
 
     public function wpdocs_register_meta_boxes()
     {
-        add_meta_box("post-like-meta-box", __('Likes for this post', 'textdomain'), 'wpdocs_my_display_callback', 'post', 'side', 'high', null);
-        function wpdocs_my_display_callback($post)
-        {
-            $num_likes = get_post_meta($post->ID, 'likes', true);
-            $content = '<div>' . $num_likes . '</div>';
-            echo $content;
+        if (isset(get_option('wp_content_likes_option_name')['track_posts']) && get_option('wp_content_likes_option_name')['track_posts'] == 'on') {
+            if (get_option('wp_content_likes_option_name')['track_posts'] == 'on') {
+                add_meta_box("post-like-meta-box", __('Likes for this post', 'textdomain'), 'wpdocs_my_display_callback', 'post', 'side', 'high', null);
+                function wpdocs_my_display_callback($post)
+                {
+                    $num_likes = get_post_meta($post->ID, 'likes', true);
+                    $content = '<div>' . $num_likes . '</div>';
+                    echo $content;
+                }
+            }
         }
     }
 
     public function wpdocs_register_meta_boxes_pages()
     {
-        add_meta_box('page-like-meta-box', __('Likes for this page', 'textdomain'), 'wpdocs_my_display_callback_page', 'page', 'side', 'high', null);
-        function wpdocs_my_display_callback_page($page)
-        {
-            $num_likes = get_post_meta($page->ID, 'likes', true);
-            $content = '<div>'. $num_likes . '</div>';
-            echo $content;
+        if (isset(get_option('wp_content_likes_option_name')['track_pages']) && get_option('wp_content_likes_option_name')['track_pages'] == 'on') {
+            if (get_option('wp_content_likes_option_name')['track_pages'] == 'on') {
+                add_meta_box('page-like-meta-box', __('Likes for this page', 'textdomain'), 'wpdocs_my_display_callback_page', 'page', 'side', 'high', null);
+                function wpdocs_my_display_callback_page($page)
+                {
+                    $num_likes = get_post_meta($page->ID, 'likes', true);
+                    $content = '<div>'. $num_likes . '</div>';
+                    echo $content;
+                }
+            }
         }
     }
 
     public function wpdocs_register_meta_boxes_custom_post()
     {
-        // Global object containing current admin page
-        global $pagenow;
+        if (isset(get_option('wp_content_likes_option_name')['track_custom_posts'])) {
+            if (get_option('wp_content_likes_option_name')['track_custom_posts'] == 'on') {
 
-        $args = array(
-           'public'   => true,
-           '_builtin' => false
-        );
+                // Global object containing current admin page
+                global $pagenow;
+                $args = array(
+                       'public'   => true,
+                       '_builtin' => false
+                    );
 
-        $post_types = get_post_types($args);
+                $post_types = get_post_types($args);
 
-        foreach ($post_types as $post_type) {
-            add_meta_box('custom-post-likes-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_custom_post', $post_type, 'side', 'high', null);
-        }
+                foreach ($post_types as $post_type) {
+                    add_meta_box('custom-post-likes-meta-box', __('Likes for this custom post type', 'textdomain'), 'wpdocs_my_display_callback_custom_post', $post_type, 'side', 'high', null);
+                }
 
-        function wpdocs_my_display_callback_custom_post()
-        {
-            $custom_post_id = sanitize_text_field($_GET['post']);
-            $num_likes = get_post_meta($custom_post_id, 'likes', true);
-            $content = '<div>' . $num_likes . '</div>';
-            echo $content;
+                function wpdocs_my_display_callback_custom_post()
+                {
+                    $custom_post_id = sanitize_text_field($_GET['post']);
+                    $num_likes = get_post_meta($custom_post_id, 'likes', true);
+                    $content = '<div>' . $num_likes . '</div>';
+                    echo $content;
+                }
+            }
         }
     }
 

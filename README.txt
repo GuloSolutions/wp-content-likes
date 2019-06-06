@@ -4,7 +4,7 @@ Donate link: www.gulosolutions.com
 Tags: likes, kpi, analytics, user activity
 Requires at least: 3.0.1
 Tested up to: 5.2
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,15 +19,15 @@ Track likes for WP published content in posts, pages, custom posts.
   * Upload the zipped to the `/wp-content/plugins/` directory
   * Install using composer
 
-2. Activate the plugin through the 'Plugins' menu in WordPress
+2. Activate the plugin in the 'Plugins' menu in WordPress
 3. Choose what to track under Settings
-4. Add the shortcode (`[wordpress-content-likes_like_button]`) to the block editor for a the post, plage or plugin
-5. Alternatively, display the like button but `<?php echo do_shortcode('[wordpress-content-likes_like_button]'); ?>`
+4. Add the shortcode (`[wordpress-content-likes_like_button]`) to the block editor for a the post, plage or plugin.
+5. Alternatively, display the like button with `<?php echo do_shortcode('[wordpress-content-likes_like_button]'); ?>`
 6. Check plugin widget for highest ranked blogs, pages or custom post types
 
 == Frequently Asked Questions ===
 
-* How do I add the plugin short code?
+* How do I add the plugin shortcode?
 
 `[wordpress-content-likes_like_button]`
 
@@ -70,6 +70,13 @@ Track likes for WP published content in posts, pages, custom posts.
 1.0.8
 
 * Fixed JS error for count not defined on certain pages
+
+1.0.9
+
+* Remove admin UI if no tracking is selected
+* Selectively  display likes info based on type
+
+
 
 
 

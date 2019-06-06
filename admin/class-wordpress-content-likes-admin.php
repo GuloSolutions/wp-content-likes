@@ -222,7 +222,6 @@ class Wordpress_Content_Likes_Admin
     {
         if (isset(get_option('wp_content_likes_option_name')['track_custom_posts'])) {
             if (get_option('wp_content_likes_option_name')['track_custom_posts'] == 'on') {
-
                 // Global object containing current admin page
                 global $pagenow;
                 $args = array(
@@ -261,13 +260,16 @@ class Wordpress_Content_Likes_Admin
 
     public function wordpress_content_likes_custom_column()
     {
-        add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
-
-        function likes_custom_column($column, $post_id)
-        {
-            if ('likes' == $column) {
-                if (get_post_meta($post_id, 'likes', true)) {
-                    echo get_post_meta($post_id, 'likes', true);
+        if (isset(get_option('wp_content_likes_option_name')['track_custom_posts'])) {
+            if (get_option('wp_content_likes_option_name')['track_custom_posts'] == 'on') {
+                add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
+                function likes_custom_column($column, $post_id)
+                {
+                    if ('likes' == $column) {
+                        if (get_post_meta($post_id, 'likes', true)) {
+                            echo get_post_meta($post_id, 'likes', true);
+                        }
+                    }
                 }
             }
         }
@@ -275,13 +277,17 @@ class Wordpress_Content_Likes_Admin
 
     public function likes_pages_custom_column()
     {
-        add_action('manage_pages_custom_column', 'pagelikes__custom_column', 10, 2);
+        if (isset(get_option('wp_content_likes_option_name')['track_pages'])) {
+            if (get_option('wp_content_likes_option_name')['track_pages'] == 'on') {
+                add_action('manage_pages_custom_column', 'pagelikes__custom_column', 10, 2);
 
-        function pagelikes__custom_column($column, $post_id)
-        {
-            if ('likes' == $column) {
-                if (get_post_meta($post_id, 'likes', true)) {
-                    echo get_post_meta($post_id, 'likes', true);
+                function pagelikes__custom_column($column, $post_id)
+                {
+                    if ('likes' == $column) {
+                        if (get_post_meta($post_id, 'likes', true)) {
+                            echo get_post_meta($post_id, 'likes', true);
+                        }
+                    }
                 }
             }
         }

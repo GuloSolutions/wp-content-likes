@@ -158,16 +158,23 @@ class Wordpress_Content_Likes
         $plugin_admin = new Wordpress_Content_Likes_Admin($this->get_plugin_name(), $this->get_version());
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-        $this->loader->add_action('wp_dashboard_setup', $plugin_admin, 'wordpress_content_likes_widget', 10);
+        if ($this->getPostsOptions() || $this->getCustomPostsOptions || $this->getPagesOptions()) {
+            $this->loader->add_action('wp_dashboard_setup', $plugin_admin, 'wordpress_content_likes_widget', 10);
+        }
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes', 10);
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_pages', 10);
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
-        $this->loader->add_filter('manage_posts_columns', $plugin_admin, 'likes_filter_posts_columns', 10);
-        $this->loader->add_filter('manage_pages_columns', $plugin_admin, 'likes_filter_pages_columns', 10);
+        if ($this->getPostsOptions()) {
+            $this->loader->add_filter('manage_posts_columns', $plugin_admin, 'likes_filter_posts_columns', 10);
+        }
+        if ($this->getCustomPostsOptions()) {
+            $this->loader->add_action('init', $plugin_admin, 'likes_pages_custom_column', 10);
+        }
+        if ($this->getPagesOptions()) {
+            $this->loader->add_filter('manage_pages_columns', $plugin_admin, 'likes_filter_pages_columns', 10);
+        }
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
         $this->loader->add_action('init', $plugin_admin, 'wordpress_content_likes_custom_column', 10);
-        $this->loader->add_action('init', $plugin_admin, 'likes_pages_custom_column', 10);
-        $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10, 2);
     }
 
     /**
@@ -230,5 +237,38 @@ class Wordpress_Content_Likes
     public function get_version()
     {
         return $this->version;
+    }
+
+    public function getPostsOptions()
+    {
+        if (isset(get_option('wp_content_likes_option_name')['track_posts'])) {
+            if (get_option('wp_content_likes_option_name')['track_posts'] == 'on') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getCustomPostsOptions()
+    {
+        if (isset(get_option('wp_content_likes_option_name')['track_custom_posts'])) {
+            if (get_option('wp_content_likes_option_name')['track_custom_posts'] == 'on') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getPagesOptions()
+    {
+        if (isset(get_option('wp_content_likes_option_name')['track_pages'])) {
+            if (get_option('wp_content_likes_option_name')['track_pages'] == 'on') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

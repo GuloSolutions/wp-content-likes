@@ -76,6 +76,11 @@ Track likes for WP published content in posts, pages, custom posts.
 * Remove admin UI if no tracking is selected
 * Selectively  display likes info based on type
 
+1.0.10
+
+* Fix JS error related to exporting like count and vote cookie
+
+
 
 
 

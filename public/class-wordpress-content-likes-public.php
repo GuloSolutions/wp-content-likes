@@ -180,28 +180,6 @@ class Wordpress_Content_Likes_Public
     {
         global $post;
 
-        // if not single blog set dummy values for vars and exit
-        if (!is_single()) {
-            $vote_cookie = 0;
-            ?>
-            <script type="text/javascript">
-            // /* <![CDATA[ */
-                var vote_cookie = <?php echo $vote_cookie; ?>;
-            // /* ]]> */
-            //   </script>
-            <?php
-
-            $like_count = 0;
-            ?>
-            <script type="text/javascript">
-            // /* <![CDATA[ */
-                var like_count = <?php echo $like_count; ?>;
-            // /* ]]> */
-            //   </script>
-            <?php
-            return;
-        }
-
         $like_count = get_post_meta($post->ID, 'likes', true);
 
         $ip = $this->_s_sl_get_ip();
@@ -209,34 +187,8 @@ class Wordpress_Content_Likes_Public
 
         $vote_cookie = get_option($ip);
 
-        if (empty($vote_cookie)) {
-            $vote_cookie = 0;
-        }
+        wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count'=>$like_count, 'vote_cookie' => $vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
 
-        if (!$like_count) {
-            $like_count = 0;
-        }
-
-        if (isset($vote_cookie)) {
-            ?>
-        <script type="text/javascript">
-        // /* <![CDATA[ */
-            var vote_cookie = <?php echo $vote_cookie; ?>;
-        // /* ]]> */
-        //   </script>
-        <?php
-        }
-
-        if (isset($like_count)) {
-            ?>
-        <script type="text/javascript">
-        // /* <![CDATA[ */
-            var like_count = <?php echo $like_count; ?>;
-        // /* ]]> */
-        //   </script>
-        <?php
-        }
-        return;
     }
 
     public function _s_sl_get_ip()

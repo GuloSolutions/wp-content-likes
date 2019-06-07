@@ -7,14 +7,14 @@
 
     $( document ).ready(function() {
 
-        if (vote_cookie == 1 && like_count > 0 && readCookie('hasVoted' + sub_cur_url )){
+        if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0 && readCookie('hasVoted' + sub_cur_url )){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
 
-        if ( like_count !== undefined){
-             if (like_count > 0){
-                 like_count_div = like_count_div = '<div class="likes-count">' + like_count + '</div>';
+        if ( ajax_data.like_count !== undefined){
+             if (ajax_data.like_count > 0){
+                 like_count_div = like_count_div = '<div class="likes-count">' + ajax_data.like_count + '</div>';
                  $('.social-likes').append(like_count_div);
              }
              else {
@@ -48,13 +48,13 @@
             disabled.data(running, true);
 
             // on new page load
-            if (clicktype ==  0 && vote_cookie == 1){
+            if (clicktype ==  0 && ajax_data.vote_cookie == 1){
                 $('.social-likes').removeClass( 'active' );
                 newclicktype = 2;
-            } else if (clicktype ==  0 && vote_cookie == 2) {
+            } else if (clicktype ==  0 && ajax_data.vote_cookie == 2) {
                  $('.social-likes').addClass( 'active' );
                   newclicktype = 1;
-            } else if(clicktype ==  0 && vote_cookie == 0) {
+            } else if(clicktype ==  0 && ajax_data.vote_cookie == 0) {
                  $('.social-likes').addClass( 'active' );
                   newclicktype = 1;
             } else if (clicktype == 1){

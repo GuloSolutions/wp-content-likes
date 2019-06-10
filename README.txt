@@ -4,7 +4,7 @@ Donate link: www.gulosolutions.com
 Tags: likes, kpi, analytics, user activity
 Requires at least: 3.0.1
 Tested up to: 5.2
-Stable tag: 1.0.9
+Stable tag: 1.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,8 @@ Track likes for WP published content in posts, pages, custom posts.
 3. Choose what to track under Settings
 4. Add the shortcode (`[wordpress-content-likes_like_button]`) to the block editor for a the post, plage or plugin.
 5. Alternatively, display the like button with `<?php echo do_shortcode('[wordpress-content-likes_like_button]'); ?>`
-6. Check plugin widget for highest ranked blogs, pages or custom post types
+6. Or, echo the like button using a custom hook -- <?php echo wp_content_likes_button(); ?> in a partial or page
+7. Check plugin widget for highest ranked blogs, pages or custom post types
 
 == Frequently Asked Questions ===
 
@@ -79,6 +80,18 @@ Track likes for WP published content in posts, pages, custom posts.
 1.0.10
 
 * Fix JS error related to exporting like count and vote cookie
+
+1.0.11
+
+* add custom hook, `wp_content_likes_button`, to display button
+
+* refactor admin for clarity and speed
+
+
+
+
+
+
 
 
 

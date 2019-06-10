@@ -61,6 +61,7 @@ class Wordpress_Content_Likes_Public
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->register_like_shortcode();
+        $this->register_custom_hook();
     }
 
     /**
@@ -112,7 +113,16 @@ class Wordpress_Content_Likes_Public
 
     public function register_like_shortcode()
     {
-        add_shortcode($this->plugin_name . '_like_button', array($this, 'print_like_button'));
+        add_shortcode($this->plugin_name, array($this, 'print_like_button'));
+    }
+
+    public function register_custom_hook()
+    {
+        function wp_content_likes_button()
+        {
+            return _s_like_button();
+        }
+        do_action('print_like_button');
     }
 
     public function print_like_button()
@@ -188,7 +198,6 @@ class Wordpress_Content_Likes_Public
         $vote_cookie = get_option($ip);
 
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count'=>$like_count, 'vote_cookie' => $vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
-
     }
 
     public function _s_sl_get_ip()

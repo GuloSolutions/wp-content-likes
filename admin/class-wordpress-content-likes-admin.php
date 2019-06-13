@@ -128,7 +128,8 @@ class Wordpress_Content_Likes_Admin
          * class.
          */
 
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wordpress-content-likes-admin.js', array( 'jquery' ), $this->version, false);
+        wp_enqueue_script($this->plugin_name.'content_delete_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-admin.js', array( 'jquery' ), $this->version, false);
+        wp_localize_script($this->plugin_name.'content_delete_likes', 'ajax_wp_content_likes', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
     public function wordpress_content_likes_widget()
@@ -332,4 +333,31 @@ class Wordpress_Content_Likes_Admin
             }
         }
     }
-}
+
+    public function _s_delete_button_handler()
+    {
+        global $wpdb;
+
+        error_log("delete");
+
+        if (isset($_POST['delete_button_id'])) {
+            
+            delete_post_meta_by_key('likes');
+            delete_option( 'wp_content_likes_option_name');
+        
+            echo json_encode("All data has been removed");
+            
+            $ip_related_options = $wpdb->get_results("SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'user_likes%'");
+            foreach ($ip_related_options as $option) {
+                delete_option($option->option_name);
+            }
+        
+            echo json_encode("All data has been removed");
+
+            wp_die();
+            }
+        }
+    }  
+
+
+  

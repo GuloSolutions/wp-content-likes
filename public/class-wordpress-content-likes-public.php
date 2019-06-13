@@ -113,7 +113,7 @@ class Wordpress_Content_Likes_Public
 
     public function register_like_shortcode()
     {
-        add_shortcode($this->plugin_name, array($this, 'print_like_button'));
+        add_shortcode($this->plugin_name . '_like_button', array($this, 'print_like_button'));
     }
 
     public function register_custom_hook()

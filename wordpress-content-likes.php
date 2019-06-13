@@ -82,6 +82,7 @@ require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admi
 function run_wordpress_content_likes()
 {
     $plugin_name = get_plugin_data(__FILE__, $markup = true, $translate = true)['Name'];
+
     // load settings
     if (is_admin() && !is_null($plugin_name)) {
         $my_settings_page = new Wordpress_Content_Likes_Admin_Settings($plugin_name);

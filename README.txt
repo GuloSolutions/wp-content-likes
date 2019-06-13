@@ -4,7 +4,7 @@ Donate link: www.gulosolutions.com
 Tags: likes, kpi, analytics, user activity
 Requires at least: 3.0.1
 Tested up to: 5.2
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,13 @@ Track likes for WP published content in posts, pages, custom posts.
 * add custom hook, `wp_content_likes_button`, to display button
 
 * refactor admin for clarity and speed
+
+1.0.12
+
+* restore shortcode
+
+* add option to delete data
+
 
 
 

@@ -7,7 +7,12 @@
 
     $( document ).ready(function() {
 
-        if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0 && readCookie('hasVoted' + sub_cur_url )){
+        console.log(ajax_data.like_count);
+
+        console.log(ajax_data.vote_cookie);
+
+
+        if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
@@ -28,14 +33,11 @@
             e.preventDefault();
             e.stopPropagation();
 
-
             var postid;
             var pageid;
             var clicktype;
             var newclicktype;
-            var result;
             var disabled;
-
             var $button = $(this);
 
             clicktype = $button.attr('clicktype');

@@ -82,6 +82,7 @@ class Wordpress_Content_Likes_Admin
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->check_tracking_on();
+        $this->_s_add_settings_link();
         global $post;
     }
 
@@ -338,26 +339,30 @@ class Wordpress_Content_Likes_Admin
     {
         global $wpdb;
 
-        error_log("delete");
-
         if (isset($_POST['delete_button_id'])) {
             
             delete_post_meta_by_key('likes');
             delete_option( 'wp_content_likes_option_name');
-        
-            echo json_encode("All data has been removed");
-            
+                    
             $ip_related_options = $wpdb->get_results("SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'user_likes%'");
             foreach ($ip_related_options as $option) {
                 delete_option($option->option_name);
             }
-        
-            echo json_encode("All data has been removed");
-
+    
             wp_die();
-            }
         }
-    }  
+    }
+
+    public function _s_add_settings_link() {
+        add_filter( "plugin_action_links", 'plugin_add_settings_link' );
+        function plugin_add_settings_link( $links ) {
+            $settings_link = 
+                '<a href="' . admin_url( 'options-general.php?page=wp_content_likes' ) . '">Settings</a>';
+            array_push( $links, $settings_link );
+            return $links;
+        }
+    }
+}  
 
 
   

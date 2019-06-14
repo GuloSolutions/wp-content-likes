@@ -50,6 +50,25 @@ class Wordpress_Content_Likes_Public
     private $vote;
 
     /**
+     * The count for each item tracked.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @var      integer   
+     */
+    public $like_count;
+
+
+    /**
+     * The ip content ID combinaiton for each item tracked.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @var      integer   
+     */
+    public $vote_cookie;
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -182,7 +201,6 @@ class Wordpress_Content_Likes_Public
         update_post_meta($this->postid, 'likes', $result);
 
         echo json_encode($result);
-
         wp_die();
     }
 
@@ -190,14 +208,14 @@ class Wordpress_Content_Likes_Public
     {
         global $post;
 
-        $like_count = get_post_meta($post->ID, 'likes', true);
+        $this->like_count = get_post_meta($post->ID, 'likes', true);
 
         $ip = $this->_s_sl_get_ip();
         $ip = $post->ID.'user_likes'.$ip;
 
-        $vote_cookie = get_option($ip);
+        $this->vote_cookie = get_option($ip);
 
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count'=>$like_count, 'vote_cookie' => $vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
+        wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count'=>$this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
     public function _s_sl_get_ip()

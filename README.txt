@@ -93,7 +93,11 @@ Track likes for WP published content in posts, pages, custom posts.
 
 * add option to delete data
 
+1.0.13 
 
+* Add JS class vars
+
+* Add settings link
 
 
 

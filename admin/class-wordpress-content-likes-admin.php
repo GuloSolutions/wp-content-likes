@@ -141,14 +141,20 @@ class Wordpress_Content_Likes_Admin
                  'wordpress_content_likes_dashboard_widget_function' // Display function.
         );
 
-        function wordpress_content_likes_dashboard_widget_function()
+        $tracked_posts = $this->tracking_posts;
+
+        $tracked_pages = $this->tracking_pages;
+
+        $tracked_custom_posts = $this->tracking_custom_posts;
+
+        function wordpress_content_likes_dashboard_widget_function($tracked_posts, $tracked_pages, $tracked_custom_posts)
         {
             global $wpdb;
             $pref = $wpdb->prefix;
             $pages=$posts=$custom_posts='';
             $content1=$content2=$content3='';
 
-            if ($this->tracking_posts) {
+            if ($tracked_posts) {
                 $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
                         LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
                             where  meta_value = (
@@ -165,7 +171,8 @@ class Wordpress_Content_Likes_Admin
                 }
             }
 
-            if ($this->tracking_pages) {
+
+            if ($tracked_pages) {
                 $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
                     LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
                         where  meta_value = (
@@ -182,7 +189,8 @@ class Wordpress_Content_Likes_Admin
                 }
             }
 
-            if ($this->tracking_custom_posts) {
+
+            if ($tracked_custom_posts) {
                 $args = array(
                    'public'   => true,
                    '_builtin' => false,
@@ -340,15 +348,15 @@ class Wordpress_Content_Likes_Admin
         global $wpdb;
 
         if (isset($_POST['delete_button_id'])) {
-            
+
             delete_post_meta_by_key('likes');
             delete_option( 'wp_content_likes_option_name');
-                    
+
             $ip_related_options = $wpdb->get_results("SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'user_likes%'");
             foreach ($ip_related_options as $option) {
                 delete_option($option->option_name);
             }
-    
+
             wp_die();
         }
     }
@@ -356,13 +364,12 @@ class Wordpress_Content_Likes_Admin
     public function _s_add_settings_link() {
         add_filter( "plugin_action_links", 'plugin_add_settings_link' );
         function plugin_add_settings_link( $links ) {
-            $settings_link = 
+            $settings_link =
                 '<a href="' . admin_url( 'options-general.php?page=wp_content_likes' ) . '">Settings</a>';
             array_push( $links, $settings_link );
             return $links;
         }
     }
-}  
+}
 
 
-  

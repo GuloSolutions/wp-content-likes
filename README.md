@@ -13,11 +13,11 @@
 <a href="https://www.gulosolutions.com/?utm_source=github&utm_medium=website&utm_campaign=links">![Image](https://github.com/GuloSolutions/wp-content-likes/blob/master/public/images/banner-github.png)</a>
 
 
-#### Description ####
+### Description ###
 
 Track likes for WP published content in posts, pages, custom posts.
 
-#### Installation ####
+### Installation ###
 
 1. How to install:
 
@@ -31,13 +31,13 @@ Track likes for WP published content in posts, pages, custom posts.
 6. Or, echo the like button using a custom hook -- <?php echo wp_content_likes_button(); ?> in a partial or page
 7. Check plugin widget for highest ranked blogs, pages or custom post types
 
-#### Frequently Asked Questions ####
+### Frequently Asked Questions ###
 
 * How do I add the plugin shortcode?
 
 `[wordpress-content-likes_like_button]`
 
-#### Changelog #### 
+### Changelog ### 
 
 1.0.1
 

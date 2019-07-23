@@ -2,7 +2,6 @@
 ## WordPress Content Likes ## 
 
 * Contributors: radboris, zwilson, fsimmons
-* Donate link: www.gulosolutions.com
 * Tags: likes, kpi, analytics, user activity
 * Requires at least: 3.0.1
 * Tested up to: 5.2
@@ -11,7 +10,7 @@
 * License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 
-![Image](https://github.com/GuloSolutions/wp-content-likes/blob/master/public/images/banner-github.png)
+<a href="https://www.gulosolutions.com/?utm_source=github&utm_medium=website&utm_campaign=links">![Image](https://github.com/GuloSolutions/wp-content-likes/blob/master/public/images/banner-github.png)</a>
 
 
 #### Description ####

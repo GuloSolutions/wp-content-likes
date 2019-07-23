@@ -1,1 +1,1 @@
-![alt text](https://github.com/GuloSolutions/wp-content-likes/blob/master/public/images/gulo-github-banner.png)
+![alt text](https://github.com/GuloSolutions/wp-content-likes/blob/master/public/images/banner-github.png)

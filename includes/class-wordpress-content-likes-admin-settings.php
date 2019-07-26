@@ -16,9 +16,8 @@ class WordPress_Content_Likes_Admin_Settings
         add_action('admin_menu', array( $this, 'add_plugin_page' ));
         add_action('admin_init', array( $this, 'page_init' ));
         $wp_list_table = new AdminTable();
-
-        $wp_list_table->get_columns;
-
+        $wp_list_table->get_columns();
+        $wp_list_table->display();
         $this->name = $name;
     }
 

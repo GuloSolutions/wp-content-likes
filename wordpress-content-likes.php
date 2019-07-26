@@ -68,14 +68,6 @@ require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes.php'
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-settings.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-widget.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-table.php';
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
-
-
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
 
 /**
  * Begins execution of the plugin.

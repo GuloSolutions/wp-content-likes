@@ -14,7 +14,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       WP Content Likes
- * Plugin URI:        https://wordpress.org/plugins/wp-content-likes
+ * Plugin URI:        https://www.gulosolutions.com/?utm_source=wp-admin&utm_medium=wp-plugin&utm_campaign=wp-content-likes
  * Description:       Track likes for different types of WP content.
  * Version:           1.0.13
  * Author:            Gulo Solutions, LLC
@@ -67,8 +67,15 @@ register_deactivation_hook(__FILE__, 'deactivate_wordpress_content_likes');
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-settings.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-widget.php';
+require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-table.php';
+if ( ! class_exists( 'WP_List_Table' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
 
 
+if ( ! class_exists( 'WP_List_Table' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
 
 /**
  * Begins execution of the plugin.

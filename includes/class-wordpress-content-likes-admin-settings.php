@@ -15,6 +15,10 @@ class WordPress_Content_Likes_Admin_Settings
     {
         add_action('admin_menu', array( $this, 'add_plugin_page' ));
         add_action('admin_init', array( $this, 'page_init' ));
+        $wp_list_table = new AdminTable();
+
+        $wp_list_table->get_columns;
+
         $this->name = $name;
     }
 
@@ -47,7 +51,7 @@ class WordPress_Content_Likes_Admin_Settings
                 // This prints out all hidden setting fields
                 settings_fields('wp_content_likes_option_group');
         do_settings_sections('wp_content_likes');
-        submit_button(); 
+        submit_button();
         submit_button( __( 'Delete all plugin data', 'textdomain' ), 'delete button-primary' , 'wp-content-likes-delete-all' );
         ?>
             </form>

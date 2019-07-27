@@ -1,16 +1,20 @@
 <?php
 
+if ( ! class_exists( 'WP_List_Table' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+
 class AdminTable extends WP_List_Table {
 
- function __construct() {
+function __construct() {
     parent::__construct( array(
-   'singular'=> 'wp_list_text_link', //Singular label
-   'plural' => 'wp_list_test_links', //plural label, also this well be one of the table css class
-   'ajax'   => false //We won't support Ajax for this table
+   'singular'=> 'wp_list_text_link',
+   'plural' => 'wp_list_test_links',
+   'ajax'   => false
    ) );
  }
 
- function get_columns() {
+ public function get_columns() {
     return $columns= array(
        'col_link_posts_total'=>__('Posts Total Likes'),
        'col_link_custom_posts_total'=>__('Custom Posts Total Likes'),
@@ -18,29 +22,20 @@ class AdminTable extends WP_List_Table {
     );
  }
 
- function get_total_counts() {
+ public function get_total_counts() {
 
  }
 
- function display_columns () {
-     parent::display();
-  }
-
- function prepare_items() {
+public function prepare_items() {
     global $wpdb, $_wp_column_headers;
     $screen = get_current_screen();
 
-    $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
-    LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
-        where  meta_value = (
-            select MAX(meta_value) from  {$pref}postmeta where meta_key = 'likes'
-        )
-    and meta_key = 'likes'
-    and {$pref}posts.post_type IN ({$custom_posts})";
+    $columns = $this->get_columns();
+    $_wp_column_headers[$screen->id]=$columns;
+    $this->_column_headers = $this->get_column_info();
+}
 
-    $the_max = $wpdb->get_row($query);
- }
- function getCustomPostsLikes() {
+ public function getCustomPostsLikes() {
     $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
     LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
         where  meta_value = (
@@ -52,7 +47,7 @@ class AdminTable extends WP_List_Table {
     $the_max = $wpdb->get_row($query);
     return $the_max;
  }
- function getPostsLikes() {
+ public function getPostsLikes() {
     $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
     LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
         where  meta_value = (
@@ -64,7 +59,7 @@ class AdminTable extends WP_List_Table {
     $the_max_posts = $wpdb->get_row($query);
     return $the_max_posts;
  }
- function getPagesLikes() {
+ public function getPagesLikes() {
     $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
     LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
         where  meta_value = (
@@ -77,4 +72,7 @@ class AdminTable extends WP_List_Table {
 
     return $the_max_pages;
  }
+ public function no_items() {
+    _e( 'No data avaliable.', 'sp' );
+  }
 }

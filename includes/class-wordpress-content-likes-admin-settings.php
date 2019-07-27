@@ -8,6 +8,7 @@ class WordPress_Content_Likes_Admin_Settings
     private $options;
     private $name;
     private $labels;
+    private $wp_list_table;
     /**
      * Start up
      */
@@ -15,9 +16,6 @@ class WordPress_Content_Likes_Admin_Settings
     {
         add_action('admin_menu', array( $this, 'add_plugin_page' ));
         add_action('admin_init', array( $this, 'page_init' ));
-        $wp_list_table = new AdminTable();
-        $wp_list_table->get_columns();
-        $wp_list_table->display();
         $this->name = $name;
     }
 
@@ -26,12 +24,11 @@ class WordPress_Content_Likes_Admin_Settings
      */
     public function add_plugin_page()
     {
-        // This page will be under "Settings"
         add_options_page(
             'Settings Admin',
             $this->name,
             'manage_options',
-            'wp_content_likes',
+            'wordpress-content-likes',
             array( $this, 'create_admin_page' )
         );
     }
@@ -55,6 +52,8 @@ class WordPress_Content_Likes_Admin_Settings
         ?>
             </form>
         </div>
+
+
         <?php
     }
 

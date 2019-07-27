@@ -82,7 +82,9 @@ class Wordpress_Content_Likes_Admin
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->check_tracking_on();
-        $this->_s_add_settings_link();
+        $this->loader = new Wordpress_Content_Likes_Loader();
+        $this-> _s_add_settings_link();
+        // Wordpress_Content_Likes_Admin::_s_add_settings_link();
         global $post;
     }
 
@@ -188,7 +190,6 @@ class Wordpress_Content_Likes_Admin
                     echo $content2;
                 }
             }
-
 
             if ($tracked_custom_posts) {
                 $args = array(
@@ -352,7 +353,7 @@ class Wordpress_Content_Likes_Admin
             delete_post_meta_by_key('likes');
             delete_option( 'wp_content_likes_option_name');
 
-            $ip_related_options = $wpdb->get_results("SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'user_likes%'");
+            $ip_related_options = $wpdb->get_resultss("SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'user_likes%'");
             foreach ($ip_related_options as $option) {
                 delete_option($option->option_name);
             }
@@ -362,13 +363,27 @@ class Wordpress_Content_Likes_Admin
     }
 
     public function _s_add_settings_link() {
-        add_filter( "plugin_action_links", 'plugin_add_settings_link' );
-        function plugin_add_settings_link( $links ) {
-            $settings_link =
-                '<a href="' . admin_url( 'options-general.php?page=wp_content_likes' ) . '">Settings</a>';
-            array_push( $links, $settings_link );
-            return $links;
+        $file = $dir = '';
+        $dir = dirname(__DIR__);
+
+        foreach (new DirectoryIterator($dir) as $fileInfo) {
+            if (strpos($fileInfo->getFilename(), 'likes') !== false) {
+                $file = $fileInfo->getFilename();
+            }
         }
+
+        $dir = explode('/',$dir);
+        $dir = end($dir);
+
+        $file = $dir.DIRECTORY_SEPARATOR.$file;
+
+        add_filter('plugin_action_links_'.$file , function( $links ) use ( $dir ) {
+            $links = array_merge( array(
+                '<a href="' . esc_url( admin_url( 'options-general.php?page='.$dir ) ) . '">' . __( 'Settings' ) . '</a>'
+            ), $links );
+
+            return $links;
+        });
     }
 }
 

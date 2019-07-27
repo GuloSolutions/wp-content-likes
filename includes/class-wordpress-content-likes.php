@@ -122,6 +122,7 @@ class Wordpress_Content_Likes
          * The class responsible for defining all actions that occur in the public-facing
          * side of the site.
          */
+
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-wordpress-content-likes-public.php';
 
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/partials/wordpress-content-likes-public-display.php';
@@ -176,8 +177,6 @@ class Wordpress_Content_Likes
         }
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
         $this->loader->add_action('init', $plugin_admin, 'wordpress_content_likes_custom_column', 10);
-
-        // $this->loader->add_action('init', $plugin_admin, '_s_add_settings_link');
 
         $this->loader->add_action('wp_ajax_nopriv_delete_handler', $plugin_admin, '_s_delete_button_handler');
         $this->loader->add_action('wp_ajax_delete_handler', $plugin_admin, '_s_delete_button_handler');

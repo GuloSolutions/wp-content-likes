@@ -58,13 +58,13 @@ class WordPress_Content_Likes_Admin_Settings
             </form>
             <div class="metabox-holder columns-3">
             <div class="meta-box-sortables ui-sortable">
-            <form method="GET">
-				<?php
-                    $this->admin_table->prepare_items();
-                    $this->admin_table->display();
-                ?>
+                <form method="GET">
+                    <?php
+                        $this->admin_table->prepare_items();
+                        $this->admin_table->display();
+                    ?>
+                </form>
 			</div>
-        </form>
         </div>
         <?php
     }

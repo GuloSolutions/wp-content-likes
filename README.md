@@ -1,5 +1,5 @@
 
-## WordPress Content Likes ## 
+## WordPress Content Likes ##
 
 * Contributors: radboris, zwilson, fsimmons
 * Tags: likes, kpi, analytics, user activity
@@ -37,7 +37,7 @@ Track likes for WP published content in posts, pages, custom posts.
 
 `[wordpress-content-likes_like_button]`
 
-### Changelog ### 
+### Changelog ###
 
 1.0.1
 
@@ -98,10 +98,16 @@ Track likes for WP published content in posts, pages, custom posts.
 
 * add option to delete data
 
-1.0.13 
+1.0.13
 
 * Add JS class vars
 
 * Add settings link
+
+1.0.14
+
+* Add table in admin section
+
+* Fixed settings link issue
 
 

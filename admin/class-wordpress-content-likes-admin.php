@@ -84,7 +84,6 @@ class Wordpress_Content_Likes_Admin
         $this->check_tracking_on();
         $this->loader = new Wordpress_Content_Likes_Loader();
         $this-> _s_add_settings_link();
-        // Wordpress_Content_Likes_Admin::_s_add_settings_link();
         global $post;
     }
 
@@ -142,12 +141,6 @@ class Wordpress_Content_Likes_Admin
                  'WordPress Content Likes Widget',         // Title.
                  'wordpress_content_likes_dashboard_widget_function' // Display function.
         );
-
-        // $tracked_posts = $this->tracking_posts ? $this->tracking_posts: false;
-
-        // $tracked_pages = $this->tracking_pages ? $this->tracking_pages: false;
-
-        // $tracked_custom_posts = $this->tracking_custom_posts ? $this->tracking_custom_posts: false;
 
         function wordpress_content_likes_dashboard_widget_function( )
         {

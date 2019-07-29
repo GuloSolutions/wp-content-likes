@@ -3,8 +3,8 @@ Contributors: radboris, zwilson, fsimmons
 Donate link: www.gulosolutions.com
 Tags: likes, kpi, analytics, user activity
 Requires at least: 3.0.1
-Tested up to: 5.2
-Stable tag: 1.0.13
+Tested up to: 5.2.2
+Stable tag: 1.0.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,11 +93,19 @@ Track likes for WP published content in posts, pages, custom posts.
 
 * add option to delete data
 
-1.0.13 
+1.0.13
 
 * Add JS class vars
 
 * Add settings link
+
+1.0.14
+
+* Add table in admin section
+
+* Fixed settings link issue
+
+
 
 
 

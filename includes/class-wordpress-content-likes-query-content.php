@@ -2,7 +2,6 @@
 
 class QueryContent
 {
-
     public static function getPostsLikes()
     {
         global $wpdb;

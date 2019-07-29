@@ -65,9 +65,9 @@ register_deactivation_hook(__FILE__, 'deactivate_wordpress_content_likes');
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes.php';
+require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-table.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-settings.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-widget.php';
-require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-table.php';
 
 /**
  * Begins execution of the plugin.

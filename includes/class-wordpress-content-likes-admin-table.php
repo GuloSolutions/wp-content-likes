@@ -6,6 +6,8 @@ if (! class_exists('WP_List_Table')) {
 
 class AdminTable extends WP_List_Table
 {
+    public $item;
+
     public function __construct()
     {
         parent::__construct(array(
@@ -18,28 +20,66 @@ class AdminTable extends WP_List_Table
     public function get_columns()
     {
         return $columns= array(
-            'col_link_posts_total'=>__('Posts Total Likes'),
-            'col_link_custom_posts_total'=>__('Custom Posts Total Likes'),
-            'col_link_pages_total'=>__('Pages Total Likes'),
+            'posts_total'=>__('Posts Total Likes'),
+            'custom_posts_total'=>__('Custom Posts Total Likes'),
+            'pages_total'=>__('Pages Total Likes'),
         );
     }
 
-    public function get_total_counts()
+    public function column_default($item, $column_name)
     {
+        switch($column_name) {
+            case 'posts_total':
+            case 'custom_posts_total':
+            case 'pages_total':
+                return $item[$column_name];
+            default:
+                return print_r( $item, true ) ;
+        }
     }
 
     public function prepare_items()
     {
-        global $wpdb, $_wp_column_headers;
-        $screen = get_current_screen();
-
-        $columns = $this->get_columns();
-        $_wp_column_headers[$screen->id]=$columns;
         $this->_column_headers = $this->get_column_info();
+
+        $per_page = $this->get_items_per_page( 'likes_per_page', 1 );
+        $current_page = $this->get_pagenum();
+        $total_items  = 1;
+
+        $this->set_pagination_args( [
+            'total_items' => $total_items, //WE have to calculate the total number of items
+            'per_page'    => $per_page //WE have to determine how many items to show on a page
+          ] );
+
+          $data[] = array(
+            'posts_total'  => QueryContent::getPostsLikes()->LIKES ?
+                QueryContent::getPostsLikes()->LIKES : null,
+            'custom_posts_total' => isset (QueryContent::getCustomPostsLikes()->LIKES) ?
+                QueryContent::getCustomPostsLikes()->LIKES : null ,
+            'pages_total' => isset (QueryContent::getPagesLikes()->LIKES) ?
+                QueryContent::getPagesLikes()->LIKES : null,
+        );
+
+        $this->items = $data;
+
+        return $this->items;
     }
+
+    public function get_sortable_columns() {
+        $sortable_columns = array(
+          'posts_total' => array( 'Posts Total Likes', true ),
+          'custom_posts_total' => array( 'Custom Posts Total Likes', true ),
+          'pages_total' => array( 'Pages Total Likes', true )
+        );
+
+        return $sortable_columns;
+      }
 
     public function getCustomPostsLikes()
     {
+        global $wpdb;
+        $pref = $wpdb->prefix;
+
         $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
             LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
                 where  meta_value = (
@@ -51,8 +91,12 @@ class AdminTable extends WP_List_Table
         $the_max = $wpdb->get_row($query);
         return $the_max;
     }
+
     public function getPostsLikes()
     {
+        global $wpdb;
+        $pref = $wpdb->prefix;
+
         $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
             LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
                 where  meta_value = (
@@ -66,6 +110,9 @@ class AdminTable extends WP_List_Table
     }
     public function getPagesLikes()
     {
+        global $wpdb;
+        $pref = $wpdb->prefix;
+
         $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
             LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
                 where  meta_value = (

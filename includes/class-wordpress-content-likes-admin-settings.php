@@ -1,5 +1,9 @@
 <?php
 
+if (! class_exists('WP_List_Table')) {
+    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+}
+
 class WordPress_Content_Likes_Admin_Settings
 {
     /**
@@ -8,7 +12,7 @@ class WordPress_Content_Likes_Admin_Settings
     private $options;
     private $name;
     private $labels;
-    private $wp_list_table;
+    private $admin_table;
     /**
      * Start up
      */
@@ -40,6 +44,7 @@ class WordPress_Content_Likes_Admin_Settings
     {
         // Set class property
         $this->options = get_option('wp_content_likes_option_name'); ?>
+
         <div class="wrap">
             <h1><?php echo $this->name ?></h1>
             <form method="post" action="options.php">
@@ -51,9 +56,16 @@ class WordPress_Content_Likes_Admin_Settings
         submit_button( __( 'Delete all plugin data', 'textdomain' ), 'delete button-primary' , 'wp-content-likes-delete-all' );
         ?>
             </form>
+            <div class="metabox-holder columns-3">
+            <div class="meta-box-sortables ui-sortable">
+            <form method="GET">
+				<?php
+                    $this->admin_table->prepare_items();
+                    $this->admin_table->display();
+                ?>
+			</div>
+        </form>
         </div>
-
-
         <?php
     }
 
@@ -97,6 +109,10 @@ class WordPress_Content_Likes_Admin_Settings
             'wp_content_likes',// Page
             'setting_section_id' // Section
         );
+
+        if (!$this->admin_table) {
+            $this->after_load_wordpress();
+        }
     }
 
     /**
@@ -131,5 +147,10 @@ class WordPress_Content_Likes_Admin_Settings
     public function print_section_info()
     {
         print '';
+    }
+
+    public function after_load_wordpress(){
+        $this->admin_table  = new AdminTable();
+        $this->admin_table->prepare_items();
     }
 }

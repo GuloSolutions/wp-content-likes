@@ -26,12 +26,12 @@ class QueryContent
         $pref = $wpdb->prefix;
 
         $args = array(
-            'public'   => true,
+            'public' => true,
             '_builtin' => false,
          );
 
-         $output = 'names';
-         $operator = 'and';
+        $output = 'names';
+        $operator = 'and';
 
         $post_types = get_post_types($args, $output, $operator);
 
@@ -50,6 +50,7 @@ class QueryContent
 
         return $the_max;
     }
+
     public static function getPagesLikes()
     {
         global $wpdb;
@@ -67,8 +68,4 @@ class QueryContent
 
         return $the_max_pages;
     }
-
-
-
-
 }

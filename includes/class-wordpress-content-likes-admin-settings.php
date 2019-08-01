@@ -1,30 +1,33 @@
 <?php
 
-if (! class_exists('WP_List_Table')) {
-    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+if (!class_exists('WP_List_Table')) {
+    require_once ABSPATH.'wp-admin/includes/class-wp-list-table.php';
 }
 
 class WordPress_Content_Likes_Admin_Settings
 {
     /**
-     * Holds the values to be used in the fields callbacks
+     * Holds the values to be used in the fields callbacks.
      */
     private $options;
     private $name;
     private $labels;
     private $admin_table;
+    private $custom_posts;
+
     /**
-     * Start up
+     * Start up.
      */
     public function __construct($name)
     {
-        add_action('admin_menu', array( $this, 'add_plugin_page' ));
-        add_action('admin_init', array( $this, 'page_init' ));
+        add_action('admin_menu', array($this, 'add_plugin_page'));
+        add_action('admin_init', array($this, 'page_init'));
+        $this->getCustomPostTypes();
         $this->name = $name;
     }
 
     /**
-     * Add options page
+     * Add options page.
      */
     public function add_plugin_page()
     {
@@ -33,12 +36,12 @@ class WordPress_Content_Likes_Admin_Settings
             $this->name,
             'manage_options',
             'wordpress-content-likes',
-            array( $this, 'create_admin_page' )
+            array($this, 'create_admin_page')
         );
     }
 
     /**
-     * Options page callback
+     * Options page callback.
      */
     public function create_admin_page()
     {
@@ -46,23 +49,21 @@ class WordPress_Content_Likes_Admin_Settings
         $this->options = get_option('wp_content_likes_option_name'); ?>
 
         <div class="wrap">
-            <h1><?php echo $this->name ?></h1>
+            <h1><?php echo $this->name; ?></h1>
             <form method="post" action="options.php">
             <?php
                 // This prints out all hidden setting fields
                 settings_fields('wp_content_likes_option_group');
         do_settings_sections('wp_content_likes');
         submit_button();
-        submit_button( __( 'Delete all plugin data', 'textdomain' ), 'delete button-primary' , 'wp-content-likes-delete-all' );
-        ?>
+        submit_button(__('Delete all plugin data', 'textdomain'), 'delete button-primary', 'wp-content-likes-delete-all'); ?>
             </form>
             <div class="metabox-holder columns-3">
             <div class="meta-box-sortables ui-sortable">
                 <form method="GET">
                     <?php
                         $this->admin_table->prepare_items();
-                        $this->admin_table->display();
-                    ?>
+        $this->admin_table->display(); ?>
                 </form>
 			</div>
         </div>
@@ -70,7 +71,7 @@ class WordPress_Content_Likes_Admin_Settings
     }
 
     /**
-     * Register and add settings
+     * Register and add settings.
      */
     public function page_init()
     {
@@ -82,14 +83,14 @@ class WordPress_Content_Likes_Admin_Settings
         add_settings_section(
             'setting_section_id', // ID
             'Which posts to enable?', // Title
-            array( $this, 'print_section_info' ), // Callback
+            array($this, 'print_section_info'), // Callback
             'wp_content_likes' // Page
         );
 
         add_settings_field(
             'track_posts', // ID
             'Enable posts tracking', // Title
-            array( $this, 'posts_callback' ), // Callback
+            array($this, 'posts_callback'), // Callback
             'wp_content_likes', // Page
             'setting_section_id' // Section
         );
@@ -97,7 +98,7 @@ class WordPress_Content_Likes_Admin_Settings
         add_settings_field(
             'track_custom_posts', // ID
             'Enable custom posts tracking', // Title
-            array( $this, 'custom_posts_callback' ), // Callback
+            array($this, 'custom_posts_callback'), // Callback
             'wp_content_likes', // Page
             'setting_section_id' // Section
         );
@@ -105,7 +106,7 @@ class WordPress_Content_Likes_Admin_Settings
         add_settings_field(
             'track_pages', // ID
             'Enable page tracking', // Title
-            array( $this, 'page_callback' ), // Callback
+            array($this, 'page_callback'), // Callback
             'wp_content_likes',// Page
             'setting_section_id' // Section
         );
@@ -116,7 +117,7 @@ class WordPress_Content_Likes_Admin_Settings
     }
 
     /**
-     * Get the settings option array and print one of its values
+     * Get the settings option array and print one of its values.
      */
     public function posts_callback()
     {
@@ -127,7 +128,7 @@ class WordPress_Content_Likes_Admin_Settings
     }
 
     /**
-     * Get the settings option array and print one of its values
+     * Get the settings option array and print one of its values.
      */
     public function custom_posts_callback()
     {
@@ -136,6 +137,7 @@ class WordPress_Content_Likes_Admin_Settings
             isset($this->options['track_custom_posts']) ? 'checked' : ''
         );
     }
+
     public function page_callback()
     {
         printf(
@@ -146,11 +148,24 @@ class WordPress_Content_Likes_Admin_Settings
 
     public function print_section_info()
     {
-        print '';
+        echo '';
     }
 
-    public function after_load_wordpress(){
-        $this->admin_table  = new AdminTable();
+    public function after_load_wordpress()
+    {
+        $this->admin_table = new AdminTable();
         $this->admin_table->prepare_items();
+    }
+
+    public function getCustomPostTypes()
+    {
+        add_action('admin_init', function () {
+            $post_types = get_post_types(array('public' => true, '_builtin' => false), 'names');
+            $custom_posts = array_values($post_types);
+
+            return $custom_posts;
+        });
+
+        $this->custom_posts = $custom_posts;
     }
 }

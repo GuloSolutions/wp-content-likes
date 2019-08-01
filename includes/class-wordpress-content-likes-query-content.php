@@ -25,15 +25,7 @@ class QueryContent
         global $wpdb;
         $pref = $wpdb->prefix;
 
-        $args = array(
-            'public' => true,
-            '_builtin' => false,
-         );
-
-        $output = 'names';
-        $operator = 'and';
-
-        $post_types = get_post_types($args, $output, $operator);
+        $post_types = self::getCustomPosts();
 
         $custom_posts = implode("','", $post_types);
         $custom_posts = "'".$custom_posts."'";
@@ -67,5 +59,20 @@ class QueryContent
         $the_max_pages = $wpdb->get_row($query);
 
         return $the_max_pages;
+    }
+
+    public static function getCustomPosts()
+    {
+        $args = array(
+            'public' => true,
+            '_builtin' => false,
+            'post__not_in' => array('page', 'post', 'attachment'),
+         );
+
+        $output = 'names';
+
+        $post_types = get_post_types($args, $output);
+
+        return $post_types;
     }
 }

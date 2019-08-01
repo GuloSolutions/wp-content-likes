@@ -82,7 +82,6 @@ class Wordpress_Content_Likes_Admin
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->check_tracking_on();
-        $this->loader = new Wordpress_Content_Likes_Loader();
         $this-> _s_add_settings_link();
         global $post;
     }

@@ -20,9 +20,9 @@ class WordPress_Content_Likes_Admin_Settings
      */
     public function __construct($name)
     {
+        $this->custom_posts = $this->getCustomPostTypes();
         add_action('admin_menu', array($this, 'add_plugin_page'));
         add_action('admin_init', array($this, 'page_init'));
-        $this->getCustomPostTypes();
         $this->name = $name;
     }
 
@@ -95,13 +95,16 @@ class WordPress_Content_Likes_Admin_Settings
             'setting_section_id' // Section
         );
 
-        add_settings_field(
-            'track_custom_posts', // ID
-            'Enable custom posts tracking', // Title
-            array($this, 'custom_posts_callback'), // Callback
-            'wp_content_likes', // Page
-            'setting_section_id' // Section
-        );
+        foreach ($this->custom_posts as $k => $v) {
+            add_settings_field(
+                "track_custom_posts_{$v}", // ID
+                "Enable {$v} tracking", // Title
+                array($this, 'custom_posts_callback'), // Callback
+                'wp_content_likes',
+                'setting_section_id',
+                array('title' => "track_custom_posts_{$v}")
+            );
+        }
 
         add_settings_field(
             'track_pages', // ID
@@ -130,11 +133,20 @@ class WordPress_Content_Likes_Admin_Settings
     /**
      * Get the settings option array and print one of its values.
      */
-    public function custom_posts_callback()
+    public function custom_posts_callback($args)
     {
+        $current_option = $input_text = '';
+        $current_option = get_option($args['label']);
+
+        if (!empty($current_option[$args['label']])) {
+            $current_option = 'checked';
+        } else {
+            $current_option = '';
+        }
+
         printf(
-            '<input type="checkbox" id="title" name="wp_content_likes_option_name[track_custom_posts]" %s />',
-            isset($this->options['track_custom_posts']) ? 'checked' : ''
+            sprintf('<input type="checkbox" id="title" name="wp_content_likes_option_name[track_custom_post_%s]" %s />', $args['label'], $current_option),
+            isset($this->options['track_custom_posts_'.$args['label']]) ? 'checked' : ''
         );
     }
 
@@ -159,13 +171,13 @@ class WordPress_Content_Likes_Admin_Settings
 
     public function getCustomPostTypes()
     {
-        add_action('admin_init', function () {
+        $custom_posts = [];
+
+        add_action('admin_init', function () use ($custom_posts) {
             $post_types = get_post_types(array('public' => true, '_builtin' => false), 'names');
             $custom_posts = array_values($post_types);
 
-            return $custom_posts;
+            $this->custom_posts = $custom_posts;
         });
-
-        $this->custom_posts = $custom_posts;
     }
 }

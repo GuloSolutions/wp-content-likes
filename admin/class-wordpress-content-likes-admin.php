@@ -318,14 +318,17 @@ class Wordpress_Content_Likes_Admin
             }
         }
 
+        $page_link = pathinfo($file);
+        $page_link = $page_link['filename'];
+
         $dir = explode('/',$dir);
         $dir = end($dir);
 
         $file = $dir.DIRECTORY_SEPARATOR.$file;
 
-        add_filter('plugin_action_links_'.$file , function( $links ) use ( $dir ) {
+        add_filter('plugin_action_links_'.$file , function( $links ) use ( $page_link ) {
             $links = array_merge( array(
-                '<a href="' . esc_url( admin_url( 'options-general.php?page='.$dir ) ) . '">' . __( 'Settings' ) . '</a>'
+                '<a href="' . esc_url( admin_url( 'options-general.php?page='.$page_link ) ) . '">' . __( 'Settings' ) . '</a>'
             ), $links );
 
             return $links;

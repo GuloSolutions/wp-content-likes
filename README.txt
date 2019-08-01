@@ -105,6 +105,12 @@ Track likes for WP published content in posts, pages, custom posts.
 
 * Fixed settings link issue
 
+1.0.15
+
+* Use file name for admin link
+
+* Add utm to author
+
 
 
 

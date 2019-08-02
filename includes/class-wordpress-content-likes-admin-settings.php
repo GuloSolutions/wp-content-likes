@@ -75,6 +75,8 @@ class WordPress_Content_Likes_Admin_Settings
      */
     public function page_init()
     {
+        $wp_content_likes_checkbox = [];
+
         register_setting(
             'wp_content_likes_option_group', // Option group
             'wp_content_likes_option_name' // Option name
@@ -97,12 +99,19 @@ class WordPress_Content_Likes_Admin_Settings
 
         foreach ($this->custom_posts as $k => $v) {
             add_settings_field(
-                "track_custom_posts_{$v}", // ID
+                "track_custom_post_{$v}", // ID
                 "Enable {$v} tracking", // Title
                 array($this, 'custom_posts_callback'), // Callback
                 'wp_content_likes',
                 'setting_section_id',
-                array('title' => "track_custom_posts_{$v}")
+                array('label' => "track_custom_post_{$v}")
+            );
+
+            register_setting(
+                'wp_content_likes_option_group', // Option group
+                // "track_custom_post_{$v}", // Option name
+                'wp_content_likes_checkbox',
+                array($this, 'sanitize_email_forms') // Sanitize
             );
         }
 
@@ -136,7 +145,7 @@ class WordPress_Content_Likes_Admin_Settings
     public function custom_posts_callback($args)
     {
         $current_option = $input_text = '';
-        $current_option = get_option($args['label']);
+        $current_option = get_option('wp_content_likes_checkbox');
 
         if (!empty($current_option[$args['label']])) {
             $current_option = 'checked';
@@ -145,8 +154,7 @@ class WordPress_Content_Likes_Admin_Settings
         }
 
         printf(
-            sprintf('<input type="checkbox" id="title" name="wp_content_likes_option_name[track_custom_post_%s]" %s />', $args['label'], $current_option),
-            isset($this->options['track_custom_posts_'.$args['label']]) ? 'checked' : ''
+            sprintf('<input type="checkbox" id="%s" name="wp_content_likes_checkbox[%s]" %s />', $args['label'], $args['label'], $current_option)
         );
     }
 

@@ -97,24 +97,6 @@ class WordPress_Content_Likes_Admin_Settings
             'setting_section_id' // Section
         );
 
-        foreach ($this->custom_posts as $k => $v) {
-            add_settings_field(
-                "track_custom_post_{$v}", // ID
-                "Enable {$v} tracking", // Title
-                array($this, 'custom_posts_callback'), // Callback
-                'wp_content_likes',
-                'setting_section_id',
-                array('label' => "track_custom_post_{$v}")
-            );
-
-            register_setting(
-                'wp_content_likes_option_group', // Option group
-                // "track_custom_post_{$v}", // Option name
-                'wp_content_likes_checkbox',
-                array($this, 'sanitize_email_forms') // Sanitize
-            );
-        }
-
         add_settings_field(
             'track_pages', // ID
             'Enable page tracking', // Title
@@ -122,6 +104,23 @@ class WordPress_Content_Likes_Admin_Settings
             'wp_content_likes',// Page
             'setting_section_id' // Section
         );
+
+        foreach ($this->custom_posts as $k => $v) {
+            add_settings_field(
+                "track_custom_post_{$v->name}", // ID
+                "Enable {$v->label} tracking", // Title
+                array($this, 'custom_posts_callback'), // Callback
+                'wp_content_likes',
+                'setting_section_id',
+                array('label' => "track_custom_post_{$v->name}", 'pos' => $v->menu_position)
+            );
+
+            register_setting(
+                'wp_content_likes_option_group', // Option group
+                'wp_content_likes_checkbox',
+                array($this, 'sanitize_email_forms') // Sanitize
+            );
+        }
 
         if (!$this->admin_table) {
             $this->after_load_wordpress();
@@ -136,6 +135,14 @@ class WordPress_Content_Likes_Admin_Settings
         printf(
             '<input type="checkbox" id="id_number" name="wp_content_likes_option_name[track_posts]" %s />',
             isset($this->options['track_posts']) ? 'checked' : ''
+        );
+    }
+
+    public function page_callback()
+    {
+        printf(
+            '<input type="checkbox" id="title" name="wp_content_likes_option_name[track_pages]" %s />',
+            isset($this->options['track_pages']) ? 'checked' : ''
         );
     }
 
@@ -158,14 +165,6 @@ class WordPress_Content_Likes_Admin_Settings
         );
     }
 
-    public function page_callback()
-    {
-        printf(
-            '<input type="checkbox" id="title" name="wp_content_likes_option_name[track_pages]" %s />',
-            isset($this->options['track_pages']) ? 'checked' : ''
-        );
-    }
-
     public function print_section_info()
     {
         echo '';
@@ -181,11 +180,10 @@ class WordPress_Content_Likes_Admin_Settings
     {
         $custom_posts = [];
 
-        add_action('admin_init', function () use ($custom_posts) {
-            $post_types = get_post_types(array('public' => true, '_builtin' => false), 'names');
-            $custom_posts = array_values($post_types);
+        add_action('admin_init', function () {
+            $post_types = get_post_types(array('public' => true, '_builtin' => false), 'objects');
 
-            $this->custom_posts = $custom_posts;
+            $this->custom_posts = $post_types;
         });
     }
 }

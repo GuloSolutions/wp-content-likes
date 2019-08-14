@@ -6,13 +6,7 @@
     let running = 'requestRunning';
 
     $( document ).ready(function() {
-
-        console.log(ajax_data.like_count);
-
-        console.log(ajax_data.vote_cookie);
-
-
-        if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
+        if (readCookie('hasVoted' + sub_cur_url) && ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }

@@ -8,11 +8,13 @@ class AdminTable extends WP_List_Table
 {
     public $item;
 
+    public $total;
+
     public function __construct()
     {
         parent::__construct(array(
-            'singular' => 'wp_list_text_link',
-            'plural' => 'wp_list_test_links',
+            'singular' => 'wp_list_like_count',
+            'plural' => 'wp_list_like_counts',
             'ajax' => false,
         ));
     }
@@ -23,6 +25,7 @@ class AdminTable extends WP_List_Table
             'posts_total' => __('Posts Total Likes'),
             'custom_posts_total' => __('Custom Posts Total Likes'),
             'pages_total' => __('Pages Total Likes'),
+            'total_likes' => __('Total Likes'),
         );
     }
 
@@ -32,6 +35,7 @@ class AdminTable extends WP_List_Table
             case 'posts_total':
             case 'custom_posts_total':
             case 'pages_total':
+            case 'total_likes':
                 return $item[$column_name];
             default:
                 return print_r($item, true);
@@ -47,17 +51,23 @@ class AdminTable extends WP_List_Table
         $total_items = 1;
 
         $this->set_pagination_args([
-            'total_items' => $total_items, //WE have to calculate the total number of items
-            'per_page' => $per_page, //WE have to determine how many items to show on a page
+            'total_items' => $total_items,
+            'per_page' => $per_page,
           ]);
 
+        $posts_total = QueryContent::getPostsLikes()->LIKES ?
+            QueryContent::getPostsLikes()->LIKES : null;
+        $custom_posts_total = isset(QueryContent::getCustomPostsLikes()->LIKES) ?
+            QueryContent::getCustomPostsLikes()->LIKES : null;
+        $pages_total = isset(QueryContent::getPagesLikes()->LIKES) ?
+            QueryContent::getPagesLikes()->LIKES : null;
+        $total_likes = $posts_total+$custom_posts_total+$pages_total;
+
         $data[] = array(
-            'posts_total' => QueryContent::getPostsLikes()->LIKES ?
-                QueryContent::getPostsLikes()->LIKES : null,
-            'custom_posts_total' => isset(QueryContent::getCustomPostsLikes()->LIKES) ?
-                QueryContent::getCustomPostsLikes()->LIKES : null,
-            'pages_total' => isset(QueryContent::getPagesLikes()->LIKES) ?
-                QueryContent::getPagesLikes()->LIKES : null,
+            'posts_total' => $posts_total,
+            'custom_posts_total' => $custom_posts_total,
+            'pages_total' => $pages_total,
+            'total_likes' => $total_likes
         );
 
         $this->items = $data;
@@ -71,6 +81,7 @@ class AdminTable extends WP_List_Table
           'posts_total' => array('Posts Total Likes', true),
           'custom_posts_total' => array('Custom Posts Total Likes', true),
           'pages_total' => array('Pages Total Likes', true),
+          'total_likes' => array('Total', true),
         );
 
         return $sortable_columns;

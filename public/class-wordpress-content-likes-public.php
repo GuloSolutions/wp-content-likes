@@ -43,6 +43,8 @@ class Wordpress_Content_Likes_Public
 
     private $vote;
 
+    private $user;
+
     /**
      * The count for each item tracked.
      *
@@ -144,12 +146,10 @@ class Wordpress_Content_Likes_Public
     public function _s_likebtn__handler()
     {
         $new_vote = $old_vote = $result = $stored = 0;
-
-        $user = $_POST['uniq'];
-
+        $this->user = sanitize_text_field($_POST['uniq']);
         $this->postid = sanitize_text_field($_POST['content_like_id']);
         $ip = $this->_s_sl_get_ip();
-        $ip = $this->postid.'user_likes'.$ip;
+        $ip = $this->postid.$this->user.$ip;
 
         $stored = get_post_meta($this->postid, 'likes', true);
 
@@ -168,7 +168,7 @@ class Wordpress_Content_Likes_Public
             wp_die();
         }
         if (!$old_vote && $stored >= 0) {
-            ++$stored;
+            $stored++;
             $result = $stored;
             update_post_meta($this->postid, 'likes', $stored);
             update_option($ip, 1);
@@ -180,10 +180,10 @@ class Wordpress_Content_Likes_Public
         }
 
         if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
-            ++$result;
+            $result++;
             $new_vote = 1;
         } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
-            --$result;
+            $result--;
             $new_vote = 2;
         }
 
@@ -202,14 +202,14 @@ class Wordpress_Content_Likes_Public
     {
         global $post;
 
-        $this->like_count = get_post_meta($post->ID, 'likes', true);
+        if (!is_admin()) {
+            $this->like_count = get_post_meta($post->ID, 'likes', true);
 
-        $ip = $this->_s_sl_get_ip();
-        $ip = $post->ID.'user_likes'.$ip;
-
-        $this->vote_cookie = get_option($ip);
-
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
+            $ip = $this->_s_sl_get_ip();
+            $ip = $post->ID.$this->user.$ip;
+            $this->vote_cookie = get_option($ip);
+            wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
+        }
     }
 
     public function _s_sl_get_ip()

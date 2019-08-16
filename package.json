@@ -1,0 +1,34 @@
+{
+  "name": "wordpress-content-likes",
+  "version": "1.0.0",
+  "description": "WP Content Likes",
+  "main": "index.js",
+  "scripts": {
+    "watch": "webpack --mode=development --watch --config webpack-config.js",
+    "build": "webpack --mode=production --config webpack-config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuloSolutions/wordpress-content-likes.git"
+  },
+  "keywords": [
+    "tracking",
+    "likes"
+  ],
+  "author": "radboris",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/GuloSolutions/wordpress-content-likes/issues"
+  },
+  "homepage": "https://github.com/GuloSolutions/wordpress-content-likes#readme",
+  "dependencies": {
+    "babel-loader": "^8.0.6",
+    "fingerprintjs2": "^2.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6"
+  }
+}

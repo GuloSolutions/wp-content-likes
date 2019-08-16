@@ -1,7 +1,7 @@
 <?php
 
-if (! class_exists('WP_List_Table')) {
-    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+if (!class_exists('WP_List_Table')) {
+    require_once ABSPATH.'wp-admin/includes/class-wp-list-table.php';
 }
 
 class AdminTable extends WP_List_Table
@@ -11,30 +11,30 @@ class AdminTable extends WP_List_Table
     public function __construct()
     {
         parent::__construct(array(
-            'singular'=> 'wp_list_text_link',
+            'singular' => 'wp_list_text_link',
             'plural' => 'wp_list_test_links',
-            'ajax'   => false
+            'ajax' => false,
         ));
     }
 
     public function get_columns()
     {
-        return $columns= array(
-            'posts_total'=>__('Posts Total Likes'),
-            'custom_posts_total'=>__('Custom Posts Total Likes'),
-            'pages_total'=>__('Pages Total Likes'),
+        return $columns = array(
+            'posts_total' => __('Posts Total Likes'),
+            'custom_posts_total' => __('Custom Posts Total Likes'),
+            'pages_total' => __('Pages Total Likes'),
         );
     }
 
     public function column_default($item, $column_name)
     {
-        switch($column_name) {
+        switch ($column_name) {
             case 'posts_total':
             case 'custom_posts_total':
             case 'pages_total':
                 return $item[$column_name];
             default:
-                return print_r( $item, true ) ;
+                return print_r($item, true);
         }
     }
 
@@ -42,21 +42,21 @@ class AdminTable extends WP_List_Table
     {
         $this->_column_headers = $this->get_column_info();
 
-        $per_page = $this->get_items_per_page( 'likes_per_page', 1 );
+        $per_page = $this->get_items_per_page('likes_per_page', 1);
         $current_page = $this->get_pagenum();
-        $total_items  = 1;
+        $total_items = 1;
 
-        $this->set_pagination_args( [
+        $this->set_pagination_args([
             'total_items' => $total_items, //WE have to calculate the total number of items
-            'per_page'    => $per_page //WE have to determine how many items to show on a page
-          ] );
+            'per_page' => $per_page, //WE have to determine how many items to show on a page
+          ]);
 
-          $data[] = array(
-            'posts_total'  => QueryContent::getPostsLikes()->LIKES ?
+        $data[] = array(
+            'posts_total' => QueryContent::getPostsLikes()->LIKES ?
                 QueryContent::getPostsLikes()->LIKES : null,
-            'custom_posts_total' => isset (QueryContent::getCustomPostsLikes()->LIKES) ?
-                QueryContent::getCustomPostsLikes()->LIKES : null ,
-            'pages_total' => isset (QueryContent::getPagesLikes()->LIKES) ?
+            'custom_posts_total' => isset(QueryContent::getCustomPostsLikes()->LIKES) ?
+                QueryContent::getCustomPostsLikes()->LIKES : null,
+            'pages_total' => isset(QueryContent::getPagesLikes()->LIKES) ?
                 QueryContent::getPagesLikes()->LIKES : null,
         );
 
@@ -65,15 +65,16 @@ class AdminTable extends WP_List_Table
         return $this->items;
     }
 
-    public function get_sortable_columns() {
+    public function get_sortable_columns()
+    {
         $sortable_columns = array(
-          'posts_total' => array( 'Posts Total Likes', true ),
-          'custom_posts_total' => array( 'Custom Posts Total Likes', true ),
-          'pages_total' => array( 'Pages Total Likes', true )
+          'posts_total' => array('Posts Total Likes', true),
+          'custom_posts_total' => array('Custom Posts Total Likes', true),
+          'pages_total' => array('Pages Total Likes', true),
         );
 
         return $sortable_columns;
-      }
+    }
 
     public function getCustomPostsLikes()
     {
@@ -89,6 +90,7 @@ class AdminTable extends WP_List_Table
             and {$pref}posts.post_type IN ({$custom_posts})";
 
         $the_max = $wpdb->get_row($query);
+
         return $the_max;
     }
 
@@ -106,8 +108,10 @@ class AdminTable extends WP_List_Table
             and {$pref}posts.post_type = 'post'";
 
         $the_max_posts = $wpdb->get_row($query);
+
         return $the_max_posts;
     }
+
     public function getPagesLikes()
     {
         global $wpdb;

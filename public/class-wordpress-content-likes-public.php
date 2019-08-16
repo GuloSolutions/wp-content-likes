@@ -3,11 +3,8 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       www.gulosolutions.com
+ * @see       www.gulosolutions.com
  * @since      1.0.0
- *
- * @package    Wordpress_Content_Likes
- * @subpackage Wordpress_Content_Likes/public
  */
 
 /**
@@ -16,19 +13,16 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
- * @package    Wordpress_Content_Likes
- * @subpackage Wordpress_Content_Likes/public
  * @author     Gulo Solutions <rad@gulosolutions.com>
  */
 class Wordpress_Content_Likes_Public
 {
-
     /**
      * The ID of this plugin.
      *
      * @since    1.0.0
-     * @access   private
-     * @var      string    $plugin_name    The ID of this plugin.
+     *
+     * @var string the ID of this plugin
      */
     private $plugin_name;
 
@@ -36,8 +30,8 @@ class Wordpress_Content_Likes_Public
      * The version of this plugin.
      *
      * @since    1.0.0
-     * @access   private
-     * @var      string    $version    The current version of this plugin.
+     *
+     * @var string the current version of this plugin
      */
     private $version;
 
@@ -53,18 +47,17 @@ class Wordpress_Content_Likes_Public
      * The count for each item tracked.
      *
      * @since    1.0.0
-     * @access   public
-     * @var      integer   
+     *
+     * @var int
      */
     public $like_count;
-
 
     /**
      * The ip content ID combinaiton for each item tracked.
      *
      * @since    1.0.0
-     * @access   public
-     * @var      integer   
+     *
+     * @var int
      */
     public $vote_cookie;
 
@@ -72,8 +65,9 @@ class Wordpress_Content_Likes_Public
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
-     * @param      string    $plugin_name       The name of the plugin.
-     * @param      string    $version    The version of this plugin.
+     *
+     * @param string $plugin_name the name of the plugin
+     * @param string $version     the version of this plugin
      */
     public function __construct($plugin_name, $version)
     {
@@ -90,8 +84,7 @@ class Wordpress_Content_Likes_Public
      */
     public function enqueue_styles()
     {
-
-        /**
+        /*
          * This function is provided for demonstration purposes only.
          *
          * An instance of this class should be passed to the run() function
@@ -103,7 +96,7 @@ class Wordpress_Content_Likes_Public
          * class.
          */
 
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . '/css/wordpress-content-likes-public.css', array(), $this->version, 'all');
+        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__).'/css/wordpress-content-likes-public.css', array(), $this->version, 'all');
     }
 
     /**
@@ -113,8 +106,7 @@ class Wordpress_Content_Likes_Public
      */
     public function enqueue_scripts()
     {
-
-        /**
+        /*
          * This function is provided for demonstration purposes only.
          *
          * An instance of this class should be passed to the run() function
@@ -126,13 +118,13 @@ class Wordpress_Content_Likes_Public
          * class.
          */
 
-        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-public.js', array('jquery'), $this->version, true);
+        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__).'/js/_likesfrontend.js', array('jquery'), $this->version, true);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
     public function register_like_shortcode()
     {
-        add_shortcode($this->plugin_name . '_like_button', array($this, 'print_like_button'));
+        add_shortcode($this->plugin_name.'_like_button', array($this, 'print_like_button'));
     }
 
     public function register_custom_hook()
@@ -152,6 +144,8 @@ class Wordpress_Content_Likes_Public
     public function _s_likebtn__handler()
     {
         $new_vote = $old_vote = $result = $stored = 0;
+
+        $user = $_POST['uniq'];
 
         $this->postid = sanitize_text_field($_POST['content_like_id']);
         $ip = $this->_s_sl_get_ip();
@@ -174,7 +168,7 @@ class Wordpress_Content_Likes_Public
             wp_die();
         }
         if (!$old_vote && $stored >= 0) {
-            $stored+=1;
+            ++$stored;
             $result = $stored;
             update_post_meta($this->postid, 'likes', $stored);
             update_option($ip, 1);
@@ -186,10 +180,10 @@ class Wordpress_Content_Likes_Public
         }
 
         if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
-            $result++;
+            ++$result;
             $new_vote = 1;
         } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
-            $result--;
+            --$result;
             $new_vote = 2;
         }
 
@@ -215,20 +209,21 @@ class Wordpress_Content_Likes_Public
 
         $this->vote_cookie = get_option($ip);
 
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count'=>$this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
+        wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
     public function _s_sl_get_ip()
     {
-        if (isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
+        if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
             $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
         }
         $ip = filter_var($ip, FILTER_VALIDATE_IP);
         $ip = ($ip === false) ? '0.0.0.0' : $ip;
+
         return $ip;
     }
 }

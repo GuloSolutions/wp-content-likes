@@ -1,4 +1,15 @@
 (function($) {
+    var finger = require('fingerprintjs2');
+
+    if (window.requestIdleCallback) {
+        requestIdleCallback(function () {
+            finger.get({}, function (components) {
+                var values = components.map(function (component) { return component.value })
+                var murmur = finger.x64hash128(values.join(''), 31)
+                console.log(murmur)
+            })
+        })
+    }
     let _is_cookie_set = false;
     let cur_url = $(location).attr('href');
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
@@ -6,7 +17,7 @@
     let running = 'requestRunning';
 
     $( document ).ready(function() {
-        if (readCookie('hasVoted' + sub_cur_url) && ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
+        if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
         }
@@ -63,8 +74,8 @@
 
             $button.attr('clicktype', newclicktype);
 
-            if (readCookie('hasVoted' + sub_cur_url) === null ){
-                createCookie('hasVoted', 1, 60);
+            if (readCookie('hasVoted'+sub_cur_url) === null ){
+                createCookie('hasVoted'+sub_cur_url, 1, 60);
              }
 
             if ( $('body[class*="postid"]').length){
@@ -80,6 +91,7 @@
             var likedata = {
                 'action': 'like_handler',
                 'content_like_id': postid ? postid : pageid,
+                'uniq' : murmur
             };
 
             jQuery.ajax({

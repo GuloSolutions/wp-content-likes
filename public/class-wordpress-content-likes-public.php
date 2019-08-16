@@ -207,6 +207,7 @@ class Wordpress_Content_Likes_Public
 
             $ip = $this->_s_sl_get_ip();
             $ip = $post->ID.$this->user.$ip;
+
             $this->vote_cookie = get_option($ip);
             wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
         }

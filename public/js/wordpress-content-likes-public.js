@@ -5,11 +5,14 @@
     if (window.requestIdleCallback) {
         requestIdleCallback(function () {
             finger.get({}, function (components) {
+                var values = components.map(function (component) { return component.value })
                 var murmur = finger.x64hash128(values.join(''), 31)
                 user = murmur;
+                console.log(murmur)
             })
         })
     }
+    let _is_cookie_set = false;
     let cur_url = $(location).attr('href');
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
     let like_count_div = '';
@@ -18,6 +21,7 @@
     $( document ).ready(function() {
         if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
             $('.social-likes').addClass( 'active' );
+            _is_cookie_set = true;
         }
 
         if ( ajax_data.like_count !== undefined){
@@ -71,6 +75,10 @@
             }
 
             $button.attr('clicktype', newclicktype);
+
+            if (readCookie('hasVoted'+sub_cur_url) === null ){
+                createCookie('hasVoted'+sub_cur_url, 1, 60);
+             }
 
             if ( $('body[class*="postid"]').length){
                  postid = $('body[class*="postid"]').attr('class').split('postid-');

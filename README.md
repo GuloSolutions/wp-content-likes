@@ -116,3 +116,9 @@ Track likes for WP published content in posts, pages, custom posts.
 
 * Add utm to author
 
+1.0.16
+
+* Update table, tracking data
+
+* Refactor for metaboxes and widget
+

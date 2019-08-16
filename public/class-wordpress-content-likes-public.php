@@ -151,6 +151,12 @@ class Wordpress_Content_Likes_Public
         $ip = $this->_s_sl_get_ip();
         $ip = $this->postid.$this->user.$ip;
 
+        error_log(print_r('handler', true));
+
+
+        error_log(print_r($ip, true));
+
+
         $stored = get_post_meta($this->postid, 'likes', true);
 
         $old_vote = get_option($ip);
@@ -207,6 +213,11 @@ class Wordpress_Content_Likes_Public
 
             $ip = $this->_s_sl_get_ip();
             $ip = $post->ID.$this->user.$ip;
+
+            error_log(print_r('export', true));
+
+
+            error_log(print_r($ip, true));
 
             $this->vote_cookie = get_option($ip);
             wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);

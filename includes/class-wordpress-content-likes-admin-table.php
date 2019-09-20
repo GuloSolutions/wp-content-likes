@@ -48,11 +48,9 @@ class AdminTable extends WP_List_Table
 
         $per_page = $this->get_items_per_page('likes_per_page', 1);
         $current_page = $this->get_pagenum();
-        $total_items = 1;
 
         $this->set_pagination_args([
-            'total_items' => $total_items,
-            'per_page' => $per_page,
+            'per_page' => $per_page
           ]);
 
         $posts_total = QueryContent::getPostsLikes()->LIKES ?

@@ -123,7 +123,6 @@ class Wordpress_Content_Likes_Public
     public function _s_likebtn__handler()
     {
         global $wpdb;
-        $new_vote = $old_vote = $result = $stored = 0;
         $sql = '';
 
         $this->user = sanitize_text_field($_POST['uniq']);
@@ -170,31 +169,13 @@ class Wordpress_Content_Likes_Public
         global $wpdb;
 
         if (!is_admin()) {
-
             $sum = "SELECT liked as VOTED, SUM(liked) as TOTAL FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$post->ID}'";
-
             $search = $wpdb->get_row($sum);
 
             $this->like_count = $search->TOTAL;
-
             $this->vote_cookie = $search->VOTED;
 
             wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
         }
-    }
-
-    public function _s_sl_get_ip()
-    {
-        if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
-        }
-        $ip = filter_var($ip, FILTER_VALIDATE_IP);
-        $ip = ($ip === false) ? '0.0.0.0' : $ip;
-
-        return $ip;
     }
 }

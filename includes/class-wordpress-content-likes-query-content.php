@@ -2,6 +2,12 @@
 
 class QueryContent
 {
+
+
+    public function __construct(){
+        $this->getCustomPosts();
+    }
+
     public static function getPostsLikes()
     {
         global $wpdb;
@@ -22,7 +28,11 @@ class QueryContent
         global $wpdb;
         $pref = $wpdb->prefix;
 
+        $custom_post_types = (QueryContent::getCustomPosts());
+
         $post_types = QueryContent::getCustomPosts();
+
+        error_log(print_r($post_types, true));
 
         $custom_posts = implode("','", $post_types);
         $custom_posts = "'".$custom_posts."'";
@@ -55,6 +65,8 @@ class QueryContent
 
     public static function getCustomPosts()
     {
+        error_log(print_r('called', true));
+
         $args = array(
             'public' => true,
             '_builtin' => false,
@@ -68,3 +80,6 @@ class QueryContent
         return $post_types;
     }
 }
+
+
+$custom_post_types = (QueryContent::getCustomPosts());

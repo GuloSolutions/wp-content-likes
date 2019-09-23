@@ -83,7 +83,6 @@ class Wordpress_Content_Likes_Admin
         $this->version = $version;
         $this->check_tracking_on();
         $this-> _s_add_settings_link();
-        global $post;
     }
 
     /**
@@ -93,20 +92,7 @@ class Wordpress_Content_Likes_Admin
      */
     public function enqueue_styles()
     {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Wordpress_Content_Likes_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Wordpress_Content_Likes_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/wordpress-content-likes-admin.css', array(), $this->version, 'all');
+        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . '/css/wordpress-content-likes-admin.css', array(), $this->version, 'all');
     }
 
     /**
@@ -116,20 +102,6 @@ class Wordpress_Content_Likes_Admin
      */
     public function enqueue_scripts()
     {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Wordpress_Content_Likes_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Wordpress_Content_Likes_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
-        wp_enqueue_script($this->plugin_name.'content_delete_likes', plugin_dir_url(__FILE__) . '/js/wordpress-content-likes-admin.js', array( 'jquery' ), $this->version, false);
         wp_localize_script($this->plugin_name.'content_delete_likes', 'ajax_wp_content_likes', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 

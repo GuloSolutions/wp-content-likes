@@ -77,6 +77,7 @@ class Wordpress_Content_Likes_Public
         $this->version = $version;
         $this->register_like_shortcode();
         $this->register_custom_hook();
+        $this->_s_export_liked_count();
     }
 
     /**

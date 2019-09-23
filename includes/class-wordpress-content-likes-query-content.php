@@ -7,12 +7,9 @@ class QueryContent
         global $wpdb;
         $pref = $wpdb->prefix;
 
-        $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
+        $query = "SELECT SUM({$pref}postmeta.meta_value) AS LIKES from {$pref}postmeta
             LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
-                where  meta_value = (
-                    select MAX(meta_value) from  {$pref}postmeta where meta_key = 'likes'
-                )
-            and meta_key = 'likes'
+            where {$pref}postmeta.meta_key = 'likes'
             and {$pref}posts.post_type = 'post'";
 
         $the_max_posts = $wpdb->get_row($query);
@@ -48,12 +45,9 @@ class QueryContent
         global $wpdb;
         $pref = $wpdb->prefix;
 
-        $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
+        $query = "SELECT SUM({$pref}postmeta.meta_value) AS LIKES from {$pref}postmeta
             LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
-                where  meta_value = (
-                    select MAX(meta_value) from  {$pref}postmeta where meta_key = 'likes'
-                )
-            and meta_key = 'likes'
+            WHERE {$pref}postmeta.meta_key = 'likes'
             and {$pref}posts.post_type = 'page'";
 
         $the_max_pages = $wpdb->get_row($query);

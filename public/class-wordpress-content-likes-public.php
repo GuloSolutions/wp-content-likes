@@ -87,18 +87,6 @@ class Wordpress_Content_Likes_Public
      */
     public function enqueue_styles()
     {
-        /*
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Wordpress_Content_Likes_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Wordpress_Content_Likes_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__).'/css/wordpress-content-likes-public.css', array(), $this->version, 'all');
     }
 
@@ -109,18 +97,6 @@ class Wordpress_Content_Likes_Public
      */
     public function enqueue_scripts()
     {
-        /*
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Wordpress_Content_Likes_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Wordpress_Content_Likes_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
         wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__).'/js/_likesfrontend.js', array('jquery'), $this->version, true);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
@@ -154,11 +130,10 @@ class Wordpress_Content_Likes_Public
 
         error_log(print_r('handler', true));
 
-
         error_log(print_r($ip, true));
 
 
-        $stored = get_post_meta($this->postid, 'likes', true);
+        $stored =(int) get_post_meta($this->postid, 'likes', true);
 
         $old_vote = get_option($ip);
 
@@ -174,7 +149,7 @@ class Wordpress_Content_Likes_Public
             echo json_encode($result);
             wp_die();
         }
-        if (!$old_vote && $stored >= 0) {
+        if (!$old_vote && ($stored >= 0)) {
             $stored++;
             $result = $stored;
             update_post_meta($this->postid, 'likes', $stored);

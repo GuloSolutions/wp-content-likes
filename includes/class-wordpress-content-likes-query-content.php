@@ -12,9 +12,9 @@ class QueryContent
             where {$pref}postmeta.meta_key = 'likes'
             and {$pref}posts.post_type = 'post'";
 
-        $the_max_posts = $wpdb->get_row($query);
+        $the_sum_posts = $wpdb->get_row($query);
 
-        return $the_max_posts;
+        return $the_sum_posts;
     }
 
     public static function getCustomPostsLikes()
@@ -22,22 +22,20 @@ class QueryContent
         global $wpdb;
         $pref = $wpdb->prefix;
 
-        $post_types = self::getCustomPosts();
+        $post_types = QueryContent::getCustomPosts();
 
         $custom_posts = implode("','", $post_types);
         $custom_posts = "'".$custom_posts."'";
 
-        $query = "SELECT post_id, meta_value AS LIKES, POST_TITLE from {$pref}postmeta
+        $query = "SELECT SUM(meta_value) AS LIKES, POST_TITLE from {$pref}postmeta
             LEFT JOIN {$pref}posts  on {$pref}posts.ID = {$pref}postmeta.post_id
-                where  meta_value = (
-                    select MAX(meta_value) from  {$pref}postmeta where meta_key = 'likes'
-                )
-            and meta_key = 'likes'
-            and {$pref}posts.post_type IN ({$custom_posts})";
+            WHERE meta_key = 'likes'
+            and {$pref}posts.post_type IN ({$custom_posts})
+            GROUP BY POST_TITLE";
 
-        $the_max = $wpdb->get_row($query);
+        $the_sum = $wpdb->get_row($query);
 
-        return $the_max;
+        return $the_sum;
     }
 
     public static function getPagesLikes()

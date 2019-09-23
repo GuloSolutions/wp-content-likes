@@ -57,8 +57,15 @@ function deactivate_wordpress_content_likes()
     Wordpress_Content_Likes_Deactivator::deactivate();
 }
 
+function activate_wordpress_content_likes_table()
+{
+    require_once plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-create-table.php';
+    Wordpress_Content_Likes_Table_Activator::activate();
+}
+
 register_activation_hook(__FILE__, 'activate_wordpress_content_likes');
 register_deactivation_hook(__FILE__, 'deactivate_wordpress_content_likes');
+register_activation_hook(__FILE__, 'activate_wordpress_content_likes_table');
 
 /**
  * The core plugin class that is used to define internationalization,

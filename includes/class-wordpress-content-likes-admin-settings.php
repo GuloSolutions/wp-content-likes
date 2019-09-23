@@ -56,7 +56,7 @@ class WordPress_Content_Likes_Admin_Settings
                 settings_fields('wp_content_likes_option_group');
         do_settings_sections('wp_content_likes');
         submit_button();
-        submit_button(__('Delete all plugin data', 'textdomain'), 'delete button-primary', 'wp-content-likes-delete-all'); ?>
+        ?>
             </form>
             <div class="metabox-holder columns-2">
             <div class="meta-box-sortables ui-sortable">

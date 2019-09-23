@@ -122,80 +122,63 @@ class Wordpress_Content_Likes_Public
 
     public function _s_likebtn__handler()
     {
+        global $wpdb;
         $new_vote = $old_vote = $result = $stored = 0;
+        $sql = '';
+
         $this->user = sanitize_text_field($_POST['uniq']);
         $this->postid = sanitize_text_field($_POST['content_like_id']);
-        $ip = $this->_s_sl_get_ip();
-        $ip = $this->postid.$this->user.$ip;
 
-        error_log(print_r('handler', true));
+        $sql = "SELECT id, liked, post_id, post_hash FROM {$wpdb->prefix}wp_content_likes WHERE post_hash='{$this->user}'" ;
+        $result = $wpdb->get_row($sql);
 
-        error_log(print_r($ip, true));
+        if ($result->liked){
+            $wpdb->query( $wpdb->prepare(
+                "
+                UPDATE {$wpdb->prefix}wp_content_likes
+                SET LIKED = %d
+                WHERE ID = %d
+                ",
+                    0, $result->id
+            ));
+        } else {
+            $wpdb->query( $wpdb->prepare(
+                "
+                UPDATE {$wpdb->prefix}wp_content_likes
+                SET LIKED = %d
+                WHERE ID = %d
+                ",
+                    1, $result->id
+            ));
+        }
 
+        $updated = "SELECT SUM(liked) as TOTAL FROM {$wpdb->prefix}wp_content_likes WHERE post_id={$result->post_id}";
+        $total = $wpdb->get_row($updated);
 
-        $stored =(int) get_post_meta($this->postid, 'likes', true);
-
-        $old_vote = get_option($ip);
-
-        if (!$old_vote && !isset($stored)) {
-            $result = 1;
-            $stored = 1;
-            // if key does not exist
-            $update_response = update_post_meta($this->postid, 'likes', $stored);
-            if (!is_numeric($update_response)) {
-                add_post_meta($this->postid, 'likes', $stored);
-            }
-            update_option($ip, 1);
-            echo json_encode($result);
+        if (isset($total->TOTAL)) {
+            echo json_encode($total->TOTAL);
+            wp_die();
+        } else {
+            echo json_encode(0);
             wp_die();
         }
-        if (!$old_vote && ($stored >= 0)) {
-            $stored++;
-            $result = $stored;
-            update_post_meta($this->postid, 'likes', $stored);
-            update_option($ip, 1);
-            echo json_encode($result);
-            wp_die();
-        }
-        if (isset($stored)) {
-            $result = $stored;
-        }
-
-        if (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 2) {
-            $result++;
-            $new_vote = 1;
-        } elseif (filter_var($result, FILTER_VALIDATE_INT) !== false && $old_vote == 1) {
-            $result--;
-            $new_vote = 2;
-        }
-
-        if ($result < 0) {
-            $result = 0;
-        }
-
-        update_option($ip, $new_vote);
-        update_post_meta($this->postid, 'likes', $result);
-
-        echo json_encode($result);
-        wp_die();
     }
 
     public function _s_export_liked_count()
     {
         global $post;
+        global $wpdb;
 
         if (!is_admin()) {
-            $this->like_count = get_post_meta($post->ID, 'likes', true);
 
-            $ip = $this->_s_sl_get_ip();
-            $ip = $post->ID.$this->user.$ip;
+            $sum = "SELECT liked as VOTED, SUM(liked) as TOTAL FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$post->ID}'";
 
-            error_log(print_r('export', true));
+            $search = $wpdb->get_row($sum);
 
+            $this->like_count = $search->TOTAL;
 
-            error_log(print_r($ip, true));
+            $this->vote_cookie = $search->VOTED;
 
-            $this->vote_cookie = get_option($ip);
             wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
         }
     }

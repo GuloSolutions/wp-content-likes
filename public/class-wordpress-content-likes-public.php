@@ -131,7 +131,7 @@ class Wordpress_Content_Likes_Public
         $sql = "SELECT id, liked, post_id, post_hash FROM {$wpdb->prefix}wp_content_likes WHERE post_hash='{$this->user}'" ;
         $result = $wpdb->get_row($sql);
 
-        if ($result->liked){
+        if ($result->id && $result->liked){
             $wpdb->query( $wpdb->prepare(
                 "
                 UPDATE {$wpdb->prefix}wp_content_likes
@@ -140,7 +140,7 @@ class Wordpress_Content_Likes_Public
                 ",
                     0, $result->id
             ));
-        } else {
+        } elseif($result->id && !$result->liked) {
             $wpdb->query( $wpdb->prepare(
                 "
                 UPDATE {$wpdb->prefix}wp_content_likes
@@ -149,9 +149,13 @@ class Wordpress_Content_Likes_Public
                 ",
                     1, $result->id
             ));
+        } else {
+            $data = array('post_hash' => $this->user, 'post_id' => $this->postid, 'liked' => 1, 'updated_at' => CURRENT_TIMESTAMP);
+            $table = "{$wpdb->prefix}wp_content_likes";
+            $wpdb->insert($table, $data);
         }
 
-        $updated = "SELECT SUM(liked) as TOTAL FROM {$wpdb->prefix}wp_content_likes WHERE post_id={$result->post_id}";
+        $updated = "SELECT SUM(liked) as TOTAL FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$this->postid}'";
         $total = $wpdb->get_row($updated);
 
         if (isset($total->TOTAL)) {

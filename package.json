@@ -23,7 +23,8 @@
   "homepage": "https://github.com/GuloSolutions/wordpress-content-likes#readme",
   "dependencies": {
     "babel-loader": "^8.0.6",
-    "fingerprintjs2": "^2.1.0"
+    "fingerprintjs2": "^2.1.0",
+    "wpapi": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

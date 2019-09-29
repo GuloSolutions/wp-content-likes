@@ -1,24 +1,28 @@
 (function($) {
-    var finger = require('fingerprintjs2');
-    let user;
+    let finger = require('fingerprintjs2');
+    var user;
 
     if (window.requestIdleCallback) {
         requestIdleCallback(function () {
             finger.get({}, function (components) {
                 var values = components.map(function (component) { return component.value })
                 var murmur = finger.x64hash128(values.join(''), 31)
-                user = murmur;
                 console.log(murmur)
+                user = murmur;
+                if (readCookie('hasVoted') === null) {
+                    document.cookie = 'hasVoted' + '=' + murmur;
+                }
             })
         })
     }
+
     let _is_cookie_set = false;
     let cur_url = $(location).attr('href');
     let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
     let like_count_div = '';
     let running = 'requestRunning';
 
-    $( document ).ready(function() {
+    $(document).ready(function() {
         if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
             $('.social-likes').addClass( 'active' );
             _is_cookie_set = true;
@@ -76,10 +80,6 @@
 
             $button.attr('clicktype', newclicktype);
 
-            if (readCookie('hasVoted'+sub_cur_url) === null ){
-                createCookie('hasVoted'+sub_cur_url, 1, 60);
-             }
-
             if ( $('body[class*="postid"]').length){
                  postid = $('body[class*="postid"]').attr('class').split('postid-');
                  postid = postid[1].split(" ")[0];
@@ -97,7 +97,7 @@
             };
 
             jQuery.ajax({
-                url : ajax_object.ajaxurl,
+                url : ajax_data.ajaxurl,
                 type : 'POST',
                 data : likedata,
                 dataType: 'json',
@@ -116,14 +116,14 @@
         });
      });
 
- function createCookie(name, value, days) {
+ function createCookie(name, value) {
     var expires = '',
         date = new Date();
     if (days) {
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         expires = '; expires=' + date.toGMTString();
     }
-    document.cookie = name + sub_cur_url + '=' + value + expires + '; path=cur_url';
+    document.cookie = name + '=' + value;
 }
 
 function readCookie(name) {

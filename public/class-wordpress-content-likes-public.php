@@ -98,7 +98,7 @@ class Wordpress_Content_Likes_Public
     public function enqueue_scripts()
     {
         wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__).'/js/_likesfrontend.js', array('jquery'), $this->version, true);
-        wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
+        // wp_localize_script($this->plugin_name.'content_likes', 'ajax_object', ['ajaxurl' => admin_url('admin-ajax.php')]);
     }
 
     public function register_like_shortcode()
@@ -123,46 +123,79 @@ class Wordpress_Content_Likes_Public
     public function _s_likebtn__handler()
     {
         global $wpdb;
-        $sql = '';
+        $table_name = $wpdb->prefix . 'wp_content_likes';
+        $sql = $cur_count = '';
 
         $this->user = sanitize_text_field($_POST['uniq']);
         $this->postid = sanitize_text_field($_POST['content_like_id']);
 
-        $sql = "SELECT id, liked, post_id, post_hash FROM {$wpdb->prefix}wp_content_likes WHERE post_hash='{$this->user}'" ;
+        // store total count for post as post meta
+        $stored = get_post_meta($this->postid, 'likes', true);
+
+        $sql = "SELECT id, vote_cookie, post_id, post_hash
+            FROM {$wpdb->prefix}wp_content_likes WHERE post_hash='{$this->user}'
+            AND post_id='{$this->postid}'" ;
+
         $result = $wpdb->get_row($sql);
 
-        if ($result->id && $result->liked){
-            $wpdb->query( $wpdb->prepare(
-                "
-                UPDATE {$wpdb->prefix}wp_content_likes
-                SET LIKED = %d
-                WHERE ID = %d
-                ",
-                    0, $result->id
-            ));
-        } elseif($result->id && !$result->liked) {
-            $wpdb->query( $wpdb->prepare(
-                "
-                UPDATE {$wpdb->prefix}wp_content_likes
-                SET LIKED = %d
-                WHERE ID = %d
-                ",
-                    1, $result->id
-            ));
-        } else {
-            $data = array('post_hash' => $this->user, 'post_id' => $this->postid, 'liked' => 1, 'updated_at' => CURRENT_TIMESTAMP);
-            $table = "{$wpdb->prefix}wp_content_likes";
-            $wpdb->insert($table, $data);
-        }
+        $where = ['post_hash' => $this->user, 'post_id' => $this->postid ];
 
-        $updated = "SELECT SUM(liked) as TOTAL FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$this->postid}'";
-        $total = $wpdb->get_row($updated);
+        // if current user liked post
+        if ($result->id && $result->vote_cookie == 1) {
+            $stored--;
+            $cur_count = $stored;
+            update_post_meta($this->postid, 'likes', $stored);
 
-        if (isset($total->TOTAL)) {
-            echo json_encode($total->TOTAL);
+            $data = ['vote_cookie' => 2];
+
+            $wpdb->update(
+                $table_name,
+                $data,
+                $where
+            );
+
+            echo json_encode($cur_count);
             wp_die();
+
+        } elseif ($result->id && $result->vote_cookie == 2){
+            $stored++;
+            $cur_count = $stored;
+            update_post_meta($this->postid, 'likes', $stored);
+
+            $data = ['vote_cookie' => 1];
+
+            $wpdb->update(
+                $table_name,
+                $data,
+                $where
+            );
+
+            echo json_encode($cur_count);
+            wp_die();
+
+        // not liked or unliked
         } else {
-            echo json_encode(0);
+            $stored = 1;
+            $cur_count = 1;
+
+            // if key does not exist
+            $update_response = update_post_meta($this->postid, 'likes', $stored);
+            if (!is_numeric($update_response)) {
+                add_post_meta($this->postid, 'likes', $stored);
+            }
+
+            // save user
+            $wpdb->insert(
+        	    $table_name,
+                [
+                    'post_hash' => $this->user,
+                    'post_id' => $this->postid,
+                    'ip_addr' => $this->_s_sl_get_ip(),
+                    'vote_cookie' => 1
+                ]
+            );
+
+            echo json_encode($cur_count);
             wp_die();
         }
     }
@@ -171,15 +204,57 @@ class Wordpress_Content_Likes_Public
     {
         global $post;
         global $wpdb;
+        $user = $result = $user = '';
 
         if (!is_admin()) {
-            $sum = "SELECT liked as VOTED, SUM(liked) as TOTAL FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$post->ID}'";
-            $search = $wpdb->get_row($sum);
+            if (isset($_COOKIE['hasVoted'])) {
+                $user = $_COOKIE['hasVoted'];
+            }
 
-            $this->like_count = $search->TOTAL;
-            $this->vote_cookie = $search->VOTED;
+            error_log(print_r('user', true));
 
+            error_log(print_r($user, true));
+
+            $this->like_count = get_post_meta($post->ID, 'likes', true);
+
+
+            if ($user) {
+                $sql = "SELECT id, vote_cookie FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$post->ID}' AND post_hash='{$user}'";
+                $result = $wpdb->get_row($sql);
+            }
+
+            if (isset($result->id)){
+                $this->vote_cookie = $result->vote_cookie;
+            } else {
+                $this->vote_cookie = 0;
+            }
+
+            error_log(print_r('like count', true));
+
+            error_log(print_r($this->like_count, true));
+
+
+            error_log(print_r('result', true));
+
+            error_log(print_r($result, true));
+
+
+            // wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__).'/js/_likesfrontend.js', array('jquery'), $this->version, true);
             wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['like_count' => $this->like_count, 'vote_cookie' => $this->vote_cookie, 'ajaxurl' => admin_url('admin-ajax.php')]);
         }
+    }
+
+    public function _s_sl_get_ip()
+    {
+        if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
+        }
+        $ip = filter_var($ip, FILTER_VALIDATE_IP);
+        $ip = ($ip === false) ? '0.0.0.0' : $ip;
+        return $ip;
     }
 }

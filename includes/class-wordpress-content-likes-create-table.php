@@ -12,11 +12,13 @@ class Wordpress_Content_Likes_Table_Activator
         $table_name = $wpdb->prefix . 'wp_content_likes';
         $charset_collate = $wpdb->get_charset_collate();
 
+        // create plugin users table
+        // vote cookie -- save previous vote
+        // post hash -- save unique browser fingerprint
         $sql = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			post_id mediumint(9) NOT NULL,
-			post_hash varchar(128) NOT NULL DEFAULT '',
-			liked tinyint(1) DEFAULT 0,
+            post_id mediumint(9),
+			post_hash varchar(128) DEFAULT '',
             vote_cookie tinyint(1) DEFAULT 0,
             ip_addr varchar(60) DEFAULT 0,
 			updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,

@@ -197,9 +197,10 @@ class Wordpress_Content_Likes
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles', 30);
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts', 30);
-        $this->loader->add_action('wp_head', $plugin_public, '_s_export_liked_count', 40);
         $this->loader->add_action('wp_ajax_nopriv_like_handler', $plugin_public, '_s_likebtn__handler');
         $this->loader->add_action('wp_ajax_like_handler', $plugin_public, '_s_likebtn__handler');
+        $this->loader->add_action('wp_ajax_nopriv_counts_handler', $plugin_public, '_s_export_liked_count');
+        $this->loader->add_action('wp_ajax_counts_handler', $plugin_public, '_s_export_liked_count');
     }
 
     /**

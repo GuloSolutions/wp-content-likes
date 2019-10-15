@@ -16,29 +16,30 @@
         })
     }
 
-    let _is_cookie_set = false;
-    let cur_url = $(location).attr('href');
-    let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
-    let like_count_div = '';
+    let vote_cookie = 1;
+    // let _is_cookie_set = false;
+    // let cur_url = $(location).attr('href');
+    // let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
+    // let like_count_div = '';
     let running = 'requestRunning';
 
     $(document).ready(function() {
-        if (ajax_data.vote_cookie == 1 && ajax_data.like_count > 0){
-            $('.social-likes').addClass( 'active' );
-            _is_cookie_set = true;
-        }
+        // if (vote_cookie == 1 && like_count > 0){
+        //     $('.social-likes').addClass( 'active' );
+        //     _is_cookie_set = true;
+        // }
 
-        if ( ajax_data.like_count !== undefined){
-             if (ajax_data.like_count > 0){
-                 like_count_div = like_count_div = '<div class="likes-count">' + ajax_data.like_count + '</div>';
-                 $('.social-likes').append(like_count_div);
-             }
-             else {
-                like_count_div = '<div class="likes-count"></div>';
-                $('.social-likes').append(like_count_div);
-                $('.likes-count').hide();
-            }
-        }
+        // if ( like_count !== undefined){
+        //      if (like_count > 0){
+        //          like_count_div = like_count_div = '<div class="likes-count">' + like_count + '</div>';
+        //          $('.social-likes').append(like_count_div);
+        //      }
+        //      else {
+        //         like_count_div = '<div class="likes-count"></div>';
+        //         $('.social-likes').append(like_count_div);
+        //         $('.likes-count').hide();
+        //     }
+        // }
 
        $('.social-likes').on('click', function(e) {
             e.preventDefault();
@@ -54,20 +55,20 @@
             clicktype = $button.attr('clicktype');
             disabled = $(e.target).closest('a');
 
-            if ( disabled.data(running) ) {
+            if (disabled.data(running) ) {
                 return;
             }
 
             disabled.data(running, true);
 
             // on new page load
-            if (clicktype ==  0 && ajax_data.vote_cookie == 1){
+            if (clicktype ==  0 && vote_cookie == 1){
                 $('.social-likes').removeClass( 'active' );
                 newclicktype = 2;
-            } else if (clicktype ==  0 && ajax_data.vote_cookie == 2) {
+            } else if (clicktype ==  0 && vote_cookie == 2) {
                  $('.social-likes').addClass( 'active' );
                   newclicktype = 1;
-            } else if(clicktype ==  0 && ajax_data.vote_cookie == 0) {
+            } else if(clicktype ==  0 && vote_cookie == 0) {
                  $('.social-likes').addClass( 'active' );
                   newclicktype = 1;
             } else if (clicktype == 1){
@@ -91,18 +92,18 @@
             }
 
             var likedata = {
-                'action': 'like_handler',
+                'action': '_s_likebtn__handler',
                 'content_like_id': postid ? postid : pageid,
                 'uniq' : user
             };
 
-            jQuery.ajax({
-                url : ajax_data.ajaxurl,
+            jQuery.post({
+                url : ajax_data.ajax_url,
                 type : 'POST',
                 data : likedata,
                 dataType: 'json',
                 success : function( response ){
-                    if (response == 1) {
+                    if (response) {
                      $('.likes-count').text(response);
                      $('.likes-count').show();
                     } else {
@@ -143,8 +144,8 @@ function readCookie(name) {
     return null;
 }
 
-function eraseCookie(name) {
-    createCookie(name, '', -1);
-}
+// function eraseCookie(name) {
+//     createCookie(name, '', -1);
+// }
 
 }) (jQuery);

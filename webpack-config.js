@@ -1,7 +1,7 @@
 const path = require( 'path' );
 const config = {
 	entry: {
-		frontend: ['./public/js/wordpress-content-likes-public.js','./public/js/wordpress-content-likes-count.js'],
+		frontend: ['./public/js/wordpress-content-likes-public.js', './public/js/wordpress-content-likes-count.js'],
 	},
 	output: {
 		filename: '_likesfrontend.js',

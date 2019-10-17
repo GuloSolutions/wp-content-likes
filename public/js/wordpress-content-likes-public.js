@@ -14,8 +14,6 @@
         })
     }
 
-    var _is_cookie_set = false;
-
     let running = 'requestRunning';
 
     $(document).ready(function() {

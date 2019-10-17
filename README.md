@@ -122,3 +122,8 @@ Track likes for WP published content in posts, pages, custom posts.
 
 * Refactor for metaboxes and widget
 
+1.1.0
+
+* Fixed likes count and JS loading
+
+* Data and user interaction saved in custom table

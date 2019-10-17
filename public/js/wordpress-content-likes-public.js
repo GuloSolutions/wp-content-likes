@@ -1,13 +1,14 @@
 (function($) {
     let finger = require('fingerprintjs2');
     var user;
+    var vote_cookie;
+
 
     if (window.requestIdleCallback) {
         requestIdleCallback(function () {
             finger.get({}, function (components) {
                 var values = components.map(function (component) { return component.value })
                 var murmur = finger.x64hash128(values.join(''), 31)
-                console.log(murmur)
                 user = murmur;
                 if (readCookie('hasVoted') === null) {
                     document.cookie = 'hasVoted' + '=' + murmur;
@@ -16,8 +17,8 @@
         })
     }
 
-    let vote_cookie = 1;
-    // let _is_cookie_set = false;
+    // vote_cookie = 1;
+    var _is_cookie_set = false;
     // let cur_url = $(location).attr('href');
     // let sub_cur_url = cur_url.substr(cur_url.lastIndexOf("/") -15);
     // let like_count_div = '';
@@ -62,24 +63,24 @@
             disabled.data(running, true);
 
             // on new page load
-            if (clicktype ==  0 && vote_cookie == 1){
-                $('.social-likes').removeClass( 'active' );
-                newclicktype = 2;
-            } else if (clicktype ==  0 && vote_cookie == 2) {
-                 $('.social-likes').addClass( 'active' );
-                  newclicktype = 1;
-            } else if(clicktype ==  0 && vote_cookie == 0) {
-                 $('.social-likes').addClass( 'active' );
-                  newclicktype = 1;
-            } else if (clicktype == 1){
-               $('.social-likes').removeClass( 'active' );
-               newclicktype = 2;
-            } else if (clicktype == 2){
-                $('.social-likes').addClass( 'active' );
-                newclicktype = 1;
-            }
+            // if (clicktype ==  0 && vote_cookie == 1){
+            //     $('.social-likes').removeClass( 'active' );
+            //     newclicktype = 2;
+            // } else if (clicktype ==  0 && vote_cookie == 2) {
+            //      $('.social-likes').addClass( 'active' );
+            //       newclicktype = 1;
+            // } else if(clicktype ==  0 && vote_cookie == 0) {
+            //      $('.social-likes').addClass( 'active' );
+            //       newclicktype = 1;
+            // } else if (clicktype == 1){
+            //    $('.social-likes').removeClass( 'active' );
+            //    newclicktype = 2;
+            // } else if (clicktype == 2){
+            //     $('.social-likes').addClass( 'active' );
+            //     newclicktype = 1;
+            // }
 
-            $button.attr('clicktype', newclicktype);
+            // $button.attr('clicktype', newclicktype);
 
             if ( $('body[class*="postid"]').length){
                  postid = $('body[class*="postid"]').attr('class').split('postid-');
@@ -103,11 +104,15 @@
                 data : likedata,
                 dataType: 'json',
                 success : function( response ){
-                    if (response) {
+                    console.log('res', response);
+                    response = Number(response);
+                    if (response >= 1) {
                      $('.likes-count').text(response);
                      $('.likes-count').show();
+                     $('.social-likes').toggleClass('active');
                     } else {
-                        $('.likes-count').text(response);
+                        $('.likes-count').hide()
+                        $('.social-likes').toggleClass('active');
                     }
                 },
                 complete: function(){

@@ -100,7 +100,6 @@ class Wordpress_Content_Likes_Public
         wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__).'/js/_likesfrontend.js', array('jquery'), $this->version, true);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['ajax_url' => admin_url('admin-ajax.php')]);
         wp_localize_script($this->plugin_name.'content_likes', 'liked_count', ['ajax_url' => admin_url('admin-ajax.php')]);
-
     }
 
     public function register_like_shortcode()
@@ -138,7 +137,9 @@ class Wordpress_Content_Likes_Public
             $stored = 0;
         }
 
-        $stored = intval($stored);
+        if ($stored < 0) {
+            $stored = 0;
+        }
 
         $sql = "SELECT id, vote_cookie, post_id, post_hash
             FROM {$wpdb->prefix}wp_content_likes WHERE post_hash='{$this->user}'
@@ -164,7 +165,7 @@ class Wordpress_Content_Likes_Public
             echo json_encode($cur_count);
             wp_die();
         } elseif ($result->id && ($result->vote_cookie == 2)) {
-            $stored++;
+            $stored+=1;
             $cur_count = (int)$stored;
             $res = update_post_meta($this->postid, 'likes', $stored);
 
@@ -181,15 +182,11 @@ class Wordpress_Content_Likes_Public
 
         // not liked or unliked
         } else {
-            $stored++;
+            $stored+=1;
             $cur_count = intval($stored);
 
             // if key does not exist
             $update_response = update_post_meta($this->postid, 'likes', $stored);
-            if (!is_numeric($update_response)) {
-                add_post_meta($this->postid, 'likes', $stored);
-            }
-
             // save user
             $wpdb->insert(
                 $table_name,
@@ -208,12 +205,28 @@ class Wordpress_Content_Likes_Public
 
     public function _s_export_liked_count()
     {
+        global $wpdb;
         $the_id = $_POST['get_count'];
+        $user = $_POST['wp_content_user'];
+
+        $vote_cookie = '';
 
         $like_count = get_post_meta($the_id, 'likes', true);
         $like_count = intval($like_count);
 
-        echo json_encode($like_count);
+        if (!empty($user)) {
+            $sql = "SELECT vote_cookie FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$the_id}' AND post_hash='{$user}'";
+            $result = $wpdb->get_row($sql);
+            $vote_cookie = $result->vote_cookie;
+        }
+
+        if (null === $result) {
+            $vote_cookie = 0;
+        }
+
+        $data = ['LIKE' => $like_count, 'VOTE' => $result->vote_cookie];
+
+        echo json_encode($data);
 
         wp_die();
     }

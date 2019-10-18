@@ -2,8 +2,8 @@
     'use strict';
 
     $(document).ready(function() {
-
         var postid;
+        var pageid;
         var user;
 
         if ( $('body[class*="postid"]').length){
@@ -12,8 +12,11 @@
        }
 
        if ( $('body[class*="page-id"]').length){
-            pageid = $('body[class*="page-id"]').attr('class').split('page-id-');
-            pageid = pageid[1].split(" ")[0];
+            pageid = $('body[class*="page-id"]').attr('class').split('page-id-') ?
+                $('body[class*="page-id"]').attr('class').split('page-id-'): '' ;
+            if (pageid) {
+                pageid = pageid[1].split(" ")[0];
+            }
        }
 
        var user = getCookie('hasVoted');

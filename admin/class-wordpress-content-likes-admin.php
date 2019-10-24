@@ -108,12 +108,12 @@ class Wordpress_Content_Likes_Admin
     public function wordpress_content_likes_widget()
     {
         wp_add_dashboard_widget(
-                 'wordpress_likes_dashboard_widget',         // Widget slug.
+            'wordpress_likes_dashboard_widget',         // Widget slug.
                  'WordPress Content Likes Widget',         // Title.
                  'wordpress_content_likes_dashboard_widget_function' // Display function.
         );
 
-        function wordpress_content_likes_dashboard_widget_function( )
+        function wordpress_content_likes_dashboard_widget_function()
         {
             $pages=$posts=$custom_posts='';
             $content1=$content2=$content3='';
@@ -200,23 +200,48 @@ class Wordpress_Content_Likes_Admin
 
     public function likes_filter_pages_columns($columns)
     {
-        $columns['likes'] = __('Likes');
+        $columns['likes'] = __('Likes', 'wp-gf-nutshells');
         return $columns;
     }
 
     public function wordpress_content_likes_custom_column()
     {
+        error_log(print_r('in col', true));
+
         if ($this->tracking_posts) {
-            add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
+
             function likes_custom_column($column, $post_id)
             {
-                if ('likes' == $column) {
-                    if (get_post_meta($post_id, 'likes', true)) {
-                        echo get_post_meta($post_id, 'likes', true);
-                    }
+
+                if ('likes' != $column) {
+                    return;
                 }
+                echo intval(get_post_meta($post_id, 'likes', true));
             }
         }
+    }
+
+    public function wp_content_likes_orderby( $query )
+    {
+        if (!is_admin()){
+            return;
+        }
+
+        $orderby = $query->get( 'orderby');
+
+        if ('likes' == $orderby ) {
+            $query->set('meta_key','likes');
+            $query->set('orderby','meta_value_num');
+        }
+    }
+
+    public function my_sortable_likes_column($columns)
+    {
+
+        error_log(print_r($columns, true));
+
+        $columns['likes'] = 'likes';
+            return $columns;
     }
 
     public function likes_pages_custom_column()
@@ -266,9 +291,8 @@ class Wordpress_Content_Likes_Admin
         global $wpdb;
 
         if (isset($_POST['delete_button_id'])) {
-
             delete_post_meta_by_key('likes');
-            delete_option( 'wp_content_likes_option_name');
+            delete_option('wp_content_likes_option_name');
 
             $ip_related_options = $wpdb->get_resultss("SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'user_likes%'");
             foreach ($ip_related_options as $option) {
@@ -279,7 +303,8 @@ class Wordpress_Content_Likes_Admin
         }
     }
 
-    public function _s_add_settings_link() {
+    public function _s_add_settings_link()
+    {
         $file = $dir = '';
         $dir = dirname(__DIR__);
 
@@ -292,19 +317,17 @@ class Wordpress_Content_Likes_Admin
         $page_link = pathinfo($file);
         $page_link = $page_link['filename'];
 
-        $dir = explode('/',$dir);
+        $dir = explode('/', $dir);
         $dir = end($dir);
 
         $file = $dir.DIRECTORY_SEPARATOR.$file;
 
-        add_filter('plugin_action_links_'.$file , function( $links ) use ( $page_link ) {
-            $links = array_merge( array(
-                '<a href="' . esc_url( admin_url( 'options-general.php?page='.$page_link ) ) . '">' . __( 'Settings' ) . '</a>'
-            ), $links );
+        add_filter('plugin_action_links_'.$file, function ($links) use ($page_link) {
+            $links = array_merge(array(
+                '<a href="' . esc_url(admin_url('options-general.php?page='.$page_link)) . '">' . __('Settings') . '</a>'
+            ), $links);
 
             return $links;
         });
     }
 }
-
-

@@ -206,17 +206,19 @@ class Wordpress_Content_Likes_Admin
 
     public function wordpress_content_likes_custom_column()
     {
-        error_log(print_r('in col', true));
-
         if ($this->tracking_posts) {
+
+            add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
 
             function likes_custom_column($column, $post_id)
             {
+                $likes = 0;
 
                 if ('likes' != $column) {
                     return;
                 }
-                echo intval(get_post_meta($post_id, 'likes', true));
+                $likes = get_post_meta($post_id, 'likes', true);
+                echo intval($likes);
             }
         }
     }
@@ -237,11 +239,9 @@ class Wordpress_Content_Likes_Admin
 
     public function my_sortable_likes_column($columns)
     {
+        $columns['likes'] = 'Likes';
 
-        error_log(print_r($columns, true));
-
-        $columns['likes'] = 'likes';
-            return $columns;
+        return $columns;
     }
 
     public function likes_pages_custom_column()

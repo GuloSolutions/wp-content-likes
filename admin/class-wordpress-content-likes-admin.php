@@ -200,7 +200,7 @@ class Wordpress_Content_Likes_Admin
 
     public function likes_filter_pages_columns($columns)
     {
-        $columns['likes'] = __('Likes', 'wp-gf-nutshells');
+        $columns['likes'] = __('Likes', 'wp-gf-nutshell');
         return $columns;
     }
 
@@ -237,7 +237,14 @@ class Wordpress_Content_Likes_Admin
         }
     }
 
-    public function my_sortable_likes_column($columns)
+    public function post_sortable_likes_column($columns)
+    {
+        $columns['likes'] = 'Likes';
+
+        return $columns;
+    }
+
+    public function page_sortable_likes_column()
     {
         $columns['likes'] = 'Likes';
 

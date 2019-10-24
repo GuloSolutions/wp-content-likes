@@ -170,13 +170,14 @@ class Wordpress_Content_Likes
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
         if ($this->getPostsOptions()) {
             $this->loader->add_filter('manage_posts_columns', $plugin_admin, 'likes_filter_posts_columns', 10);
-            $this->loader->add_filter('manage_edit-post_sortable_columns', $plugin_admin, 'my_sortable_likes_column', 10);
+            $this->loader->add_filter('manage_edit-post_sortable_columns', $plugin_admin, 'post_sortable_likes_column', 10);
         }
         if ($this->getCustomPostsOptions()) {
             $this->loader->add_action('init', $plugin_admin, 'likes_pages_custom_column', 10);
         }
         if ($this->getPagesOptions()) {
             $this->loader->add_filter('manage_pages_columns', $plugin_admin, 'likes_filter_pages_columns', 10);
+            $this->loader->add_filter('manage_edit-page_sortable_columns', $plugin_admin, 'page_sortable_likes_column', 10);
         }
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
         $this->loader->add_action('init', $plugin_admin, 'wordpress_content_likes_custom_column', 10);

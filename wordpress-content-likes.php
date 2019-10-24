@@ -43,16 +43,6 @@ define('WORDPRESS_CONTENT_LIKES_VERSION', '1.1.1');
  */
 function activate_wordpress_content_likes()
 {
-    if (!function_exists('is_plugin_active')) {
-        include_once(ABSPATH . '/wp-admin/includes/plugin.php');
-    }
-
-    if (current_user_can('activate_plugins') && !is_plugin_active('gravityforms/gravityforms.php')) {
-        deactivate_plugins(plugin_basename(__FILE__));
-        $error_message = '<p style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Oxygen-Sans,Ubuntu,Cantarell,\'Helvetica Neue\',sans-serif;font-size: 13px;line-height: 1.5;color:#444;">' . esc_html__('This plugin requires ', 'wp-gf-nutshell') . '<a href="' . esc_url('https://www.gravityforms.com/') . '">Gravity Forms</a>' . esc_html__(' to be active.', 'wp-gf-nutshell') . '</p>';
-        die($error_message);
-    }
-
     require_once plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-activator.php';
     Wordpress_Content_Likes_Activator::activate();
 }
@@ -99,12 +89,10 @@ function run_wordpress_content_likes()
     }
 
     // load settings
-    if (is_admin() && class_exists('GFCommon')) {
         $plugin_name = get_plugin_data(__FILE__, $markup = true, $translate = true)['Name'];
         $my_settings_page = new Wordpress_Content_Likes_Admin_Settings($plugin_name);
 
         $plugin = new Wordpress_Content_Likes();
         $plugin->run();
-    }
 }
 run_wordpress_content_likes();

@@ -103,8 +103,8 @@ function run_wordpress_content_likes()
         $plugin_name = get_plugin_data(__FILE__, $markup = true, $translate = true)['Name'];
         $my_settings_page = new Wordpress_Content_Likes_Admin_Settings($plugin_name);
 
-    $plugin = new Wordpress_Content_Likes();
-    $plugin->run();
+        $plugin = new Wordpress_Content_Likes();
+        $plugin->run();
     }
 }
 run_wordpress_content_likes();

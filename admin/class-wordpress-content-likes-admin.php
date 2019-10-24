@@ -194,20 +194,19 @@ class Wordpress_Content_Likes_Admin
 
     public function likes_filter_posts_columns($columns)
     {
-        $columns['likes'] = __('Likes');
+        $columns['likes'] = __('Likes', 'wp-content-likes');
         return $columns;
     }
 
     public function likes_filter_pages_columns($columns)
     {
-        $columns['likes'] = __('Likes', 'wp-gf-nutshell');
+        $columns['likes'] = __('Likes', 'wp-content-likes');
         return $columns;
     }
 
     public function wordpress_content_likes_custom_column()
     {
         if ($this->tracking_posts) {
-
             add_action('manage_posts_custom_column', 'likes_custom_column', 10, 2);
 
             function likes_custom_column($column, $post_id)

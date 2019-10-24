@@ -4,7 +4,7 @@ const config = {
 		frontend: ['./public/js/wordpress-content-likes-public.js', './public/js/wordpress-content-likes-count.js'],
 	},
 	output: {
-		filename: '_likesfrontend.js',
+		filename: 'likesfrontend.js',
 		path: path.resolve( __dirname, './public/js' )
 	},
 	module: {

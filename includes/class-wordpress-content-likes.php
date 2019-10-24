@@ -182,6 +182,8 @@ class Wordpress_Content_Likes
 
         $this->loader->add_action('wp_ajax_nopriv_delete_handler', $plugin_admin, '_s_delete_button_handler');
         $this->loader->add_action('wp_ajax_delete_handler', $plugin_admin, '_s_delete_button_handler');
+        $this->loader->add_filter('manage_posts_sortable_column', $plugin_admin, 'my_sortable_likes_column', 10);
+        $this->loader->add_action('pre_get_posts', $plugin_admin, 'wp_content_likes_orderby');
     }
 
     /**

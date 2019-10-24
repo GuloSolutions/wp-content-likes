@@ -16,7 +16,7 @@
  * Plugin Name:       WP Content Likes
  * Plugin URI:        https://wordpress.org/plugins/wp-content-likes
  * Description:       Track likes for different types of WP content.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Author:            Gulo Solutions, LLC
  * Author URI:        https://www.gulosolutions.com/?utm_source=wp-admin&utm_medium=wp-plugin&utm_campaign=wp-content-likes
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if (! defined('WPINC')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('WORDPRESS_CONTENT_LIKES_VERSION', '1.1.0');
+define('WORDPRESS_CONTENT_LIKES_VERSION', '1.1.1');
 
 /**
  * The code that runs during plugin activation.
@@ -43,6 +43,16 @@ define('WORDPRESS_CONTENT_LIKES_VERSION', '1.1.0');
  */
 function activate_wordpress_content_likes()
 {
+    if (!function_exists('is_plugin_active')) {
+        include_once(ABSPATH . '/wp-admin/includes/plugin.php');
+    }
+
+    if (current_user_can('activate_plugins') && !is_plugin_active('gravityforms/gravityforms.php')) {
+        deactivate_plugins(plugin_basename(__FILE__));
+        $error_message = '<p style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Oxygen-Sans,Ubuntu,Cantarell,\'Helvetica Neue\',sans-serif;font-size: 13px;line-height: 1.5;color:#444;">' . esc_html__('This plugin requires ', 'wp-gf-nutshell') . '<a href="' . esc_url('https://www.gravityforms.com/') . '">Gravity Forms</a>' . esc_html__(' to be active.', 'wp-gf-nutshell') . '</p>';
+        die($error_message);
+    }
+
     require_once plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-activator.php';
     Wordpress_Content_Likes_Activator::activate();
 }
@@ -63,18 +73,15 @@ function activate_wordpress_content_likes_table()
     Wordpress_Content_Likes_Table_Activator::activate();
 }
 
-register_activation_hook(__FILE__, 'activate_wordpress_content_likes');
-register_deactivation_hook(__FILE__, 'deactivate_wordpress_content_likes');
-register_activation_hook(__FILE__, 'activate_wordpress_content_likes_table');
 
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-table.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-settings.php';
 require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admin-widget.php';
+
+register_activation_hook(__FILE__, 'activate_wordpress_content_likes');
+register_deactivation_hook(__FILE__, 'deactivate_wordpress_content_likes');
+register_activation_hook(__FILE__, 'activate_wordpress_content_likes_table');
 
 /**
  * Begins execution of the plugin.
@@ -87,14 +94,17 @@ require plugin_dir_path(__FILE__) . 'includes/class-wordpress-content-likes-admi
  */
 function run_wordpress_content_likes()
 {
-    $plugin_name = get_plugin_data(__FILE__, $markup = true, $translate = true)['Name'];
+    if (!function_exists('is_plugin_active')) {
+        include_once(ABSPATH . '/wp-admin/includes/plugin.php');
+    }
 
     // load settings
-    if (is_admin() && !is_null($plugin_name)) {
+    if (is_admin() && class_exists('GFCommon')) {
+        $plugin_name = get_plugin_data(__FILE__, $markup = true, $translate = true)['Name'];
         $my_settings_page = new Wordpress_Content_Likes_Admin_Settings($plugin_name);
-    }
 
     $plugin = new Wordpress_Content_Likes();
     $plugin->run();
+    }
 }
 run_wordpress_content_likes();

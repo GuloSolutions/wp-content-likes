@@ -181,7 +181,6 @@ class Wordpress_Content_Likes
         }
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'wpdocs_register_meta_boxes_custom_post', 10);
         $this->loader->add_action('init', $plugin_admin, 'wordpress_content_likes_custom_column', 10);
-
         $this->loader->add_action('wp_ajax_nopriv_delete_handler', $plugin_admin, '_s_delete_button_handler');
         $this->loader->add_action('wp_ajax_delete_handler', $plugin_admin, '_s_delete_button_handler');
         $this->loader->add_action('pre_get_posts', $plugin_admin, 'wp_content_likes_orderby');

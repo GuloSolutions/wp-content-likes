@@ -178,8 +178,6 @@ class WordPress_Content_Likes_Admin_Settings
 
     public function getCustomPostTypes()
     {
-        $custom_posts = [];
-
         add_action('admin_init', function () {
             $post_types = get_post_types(array('public' => true, '_builtin' => false), 'objects');
 

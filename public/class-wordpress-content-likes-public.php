@@ -97,7 +97,7 @@ class Wordpress_Content_Likes_Public
      */
     public function enqueue_scripts()
     {
-        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__).'/js/likesfrontend.js', array(''), $this->version, true);
+        wp_enqueue_script($this->plugin_name.'content_likes', plugin_dir_url(__FILE__).'/js/likesfrontend.js', array('jquery'), $this->version);
         wp_localize_script($this->plugin_name.'content_likes', 'ajax_data', ['ajax_url' => admin_url('admin-ajax.php')]);
         wp_localize_script($this->plugin_name.'content_likes', 'liked_count', ['ajax_url' => admin_url('admin-ajax.php')]);
     }

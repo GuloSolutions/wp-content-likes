@@ -34,6 +34,12 @@ Track likes for WP published content in posts, pages, custom posts.
 
 == Changelog ==
 
+1.1.1
+
+* Fixed pageid check
+
+* Restored jquery dependency
+
 1.1.0
 
 * Fixed likes count and JS loading

@@ -33,6 +33,7 @@ class Wordpress_Content_Likes_Public
      *
      * @var string the current version of this plugin
      */
+
     private $version;
 
     private $postid;
@@ -71,6 +72,9 @@ class Wordpress_Content_Likes_Public
      * @param string $plugin_name the name of the plugin
      * @param string $version     the version of this plugin
      */
+
+     const TABLE_NAME='content_likesdata';
+
     public function __construct($plugin_name, $version)
     {
         $this->plugin_name = $plugin_name;
@@ -124,7 +128,7 @@ class Wordpress_Content_Likes_Public
     public function _s_likebtn__handler()
     {
         global $wpdb;
-        $table_name = $wpdb->prefix.'wp_content_likes';
+        $table_name = $wpdb->prefix.self::TABLE_NAME;
         $sql = $cur_count = '';
 
         $this->user = sanitize_text_field($_POST['uniq']);
@@ -142,7 +146,7 @@ class Wordpress_Content_Likes_Public
         }
 
         $sql = "SELECT id, vote_cookie, post_id, post_hash
-            FROM {$wpdb->prefix}wp_content_likes WHERE post_hash='{$this->user}'
+            FROM {$wpdb->prefix}self::TABLE_NAME  WHERE post_hash='{$this->user}'
             AND post_id='{$this->postid}'" ;
 
         $result = $wpdb->get_row($sql);
@@ -215,7 +219,7 @@ class Wordpress_Content_Likes_Public
         $like_count = intval($like_count);
 
         if (!empty($user)) {
-            $sql = "SELECT vote_cookie FROM {$wpdb->prefix}wp_content_likes WHERE post_id='{$the_id}' AND post_hash='{$user}'";
+            $sql = "SELECT vote_cookie FROM {$wpdb->prefix}self::TABLE_NAME WHERE post_id='{$the_id}' AND post_hash='{$user}'";
             $result = $wpdb->get_row($sql);
             $vote_cookie = $result->vote_cookie;
         }

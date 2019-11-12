@@ -9,7 +9,7 @@ class Wordpress_Content_Likes_Table_Activator
 
         $wp_content_likes_db_version = '1.0';
 
-        $table_name = $wpdb->prefix . 'wp_content_likes';
+        $table_name = $wpdb->prefix . 'content_likesdata';
         $charset_collate = $wpdb->get_charset_collate();
 
         // create plugin users table
@@ -36,11 +36,5 @@ class Wordpress_Content_Likes_Table_Activator
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp_content_likes';
-        // $wpdb->insert(
-        // 	$table_name,
-        // 	array(
-
-        // 	)
-        // );
     }
 }

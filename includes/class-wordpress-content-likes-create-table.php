@@ -7,12 +7,11 @@ class Wordpress_Content_Likes_Table_Activator
         global $wpdb;
         global $wp_content_likes_db_version;
 
-        $wp_content_likes_db_version = '1.0';
+        $wp_content_likes_db_version = '1.1';
 
         $table_name = $wpdb->prefix . 'content_likesdata';
         $charset_collate = $wpdb->get_charset_collate();
 
-        // create plugin users table
         // vote cookie -- save previous vote
         // post hash -- save unique browser fingerprint
         $sql = "CREATE TABLE $table_name (
@@ -35,6 +34,6 @@ class Wordpress_Content_Likes_Table_Activator
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp_content_likes';
+        $table_name = $wpdb->prefix . 'content_likesdata';
     }
 }

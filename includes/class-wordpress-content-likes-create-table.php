@@ -1,11 +1,14 @@
 <?php
 
+const TABLE_NAME='content_likesdata';
+
 class Wordpress_Content_Likes_Table_Activator
 {
     public static function activate()
     {
         global $wpdb;
         global $wp_content_likes_db_version;
+
 
         $wp_content_likes_db_version = '1.1';
 
@@ -34,6 +37,6 @@ class Wordpress_Content_Likes_Table_Activator
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'content_likesdata';
+        $table_name = $wpdb->prefix.self::TABLE_NAME;
     }
 }

@@ -73,7 +73,7 @@ class Wordpress_Content_Likes_Public
      * @param string $version     the version of this plugin
      */
 
-     const TABLE_NAME='content_likesdata';
+    const TABLE_NAME='content_likesdata';
 
     public function __construct($plugin_name, $version)
     {

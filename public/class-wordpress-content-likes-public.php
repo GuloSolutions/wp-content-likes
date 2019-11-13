@@ -146,7 +146,7 @@ class Wordpress_Content_Likes_Public
         }
 
         $sql = "SELECT id, vote_cookie, post_id, post_hash
-            FROM {$wpdb->prefix}self::TABLE_NAME  WHERE post_hash='{$this->user}'
+            FROM {$table_name}  WHERE post_hash='{$this->user}'
             AND post_id='{$this->postid}'" ;
 
         $result = $wpdb->get_row($sql);
@@ -198,7 +198,7 @@ class Wordpress_Content_Likes_Public
                     'post_hash' => $this->user,
                     'post_id' => $this->postid,
                     'ip_addr' => $this->_s_sl_get_ip(),
-                    'vote_cookie' => 1
+                    'vote_cookie' => 1,
                 ]
             );
 
@@ -212,6 +212,7 @@ class Wordpress_Content_Likes_Public
         global $wpdb;
         $the_id = $_POST['get_count'];
         $user = $_POST['wp_content_user'];
+        $table_name = $wpdb->prefix.self::TABLE_NAME;
 
         $vote_cookie = '';
 
@@ -219,7 +220,7 @@ class Wordpress_Content_Likes_Public
         $like_count = intval($like_count);
 
         if (!empty($user)) {
-            $sql = "SELECT vote_cookie FROM {$wpdb->prefix}self::TABLE_NAME WHERE post_id='{$the_id}' AND post_hash='{$user}'";
+            $sql = "SELECT vote_cookie FROM $table_name WHERE post_id='{$the_id}' AND post_hash='{$user}'";
             $result = $wpdb->get_row($sql);
             $vote_cookie = $result->vote_cookie;
         }

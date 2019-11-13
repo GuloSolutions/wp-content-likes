@@ -34,14 +34,14 @@ class Wordpress_Content_Likes_Table_Activator
     {
         global $wpdb;
 
-        $sql_migrate = '';
+        $sql_migrate = $sql_drop = '';
 
         $table_name = $wpdb->prefix.self::TABLE_NAME;
         $old_table_name=$wpdb->prefix.'wp_content_likes';
         $sql_check = "
             SELECT count(*) as found
             FROM information_schema.TABLES
-                WHERE (TABLE_SCHEMA = '$wpdb->dbname') AND (TABLE_NAME = '$old_table_name')";
+                WHERE (TABLE_SCHEMA = '$wpdb->dbname') AND (TABLE_NAME = '$old_table_name');";
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -49,7 +49,10 @@ class Wordpress_Content_Likes_Table_Activator
 
         if (intval($res) >= 1) {
             $sql_migrate = "INSERT INTO $table_name SELECT * FROM $old_table_name;";
+            $sql_drop = "DROP TABLE $old_table_name;";
         }
+
+        dbDelta($sql_migrate);
 
         dbDelta($sql_migrate);
     }

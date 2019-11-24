@@ -223,17 +223,19 @@ class Wordpress_Content_Likes_Admin
         }
     }
 
-    public function wp_content_likes_orderby( $query )
+    public function wp_content_likes_orderby($query)
     {
-        if (!is_admin()){
+        if (!is_admin()) {
             return;
         }
+        error_log(print_r($query, true));
 
-        $orderby = $query->get( 'orderby');
+        $orderby = $query->get('orderby');
 
-        if ('likes' == $orderby ) {
-            $query->set('meta_key','likes');
-            $query->set('orderby','meta_value_num');
+        if ('Likes' == $orderby) {
+            $query->set('meta_key', 'likes');
+            $query->set('order', 'DESC');
+            $query->set('orderby', 'meta_value_num');
         }
     }
 

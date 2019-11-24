@@ -5,7 +5,7 @@
 * Tags: likes, kpi, analytics, user activity
 * Requires at least: 3.0.1
 * Tested up to: 5.3
-* Stable tag: 1.1.2
+* Stable tag: 1.1.3
 * License: GPLv2 or later
 * License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,13 @@ Track likes for WP published content in posts, pages, custom posts.
 `[wordpress-content-likes_like_button]`
 
 ### Changelog ###
+
+
+1.1.3
+
+* Fixed likes ordering query
+
+* Fixed output and erro for table sql query on install
 
 1.1.2
 
